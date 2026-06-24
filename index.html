@@ -1,156 +1,273 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PINEK — Politique de confidentialité / Privacy Policy</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-           max-width: 760px; margin: 0 auto; padding: 28px 20px 64px; line-height: 1.6;
-           color: #1b1b1b; background: #fafaf7; }
-    @media (prefers-color-scheme: dark){ body{ color:#e8e8e3; background:#14140f; } a{ color:#d6b46e; } }
-    h1 { font-size: 1.7rem; }
-    h2 { font-size: 1.2rem; margin-top: 2em; border-bottom: 1px solid rgba(128,128,128,.25); padding-bottom: 4px; }
-    h3 { font-size: 1.02rem; margin-top: 1.4em; }
-    .lang-sep { margin: 56px 0 8px; border: none; border-top: 2px solid rgba(128,128,128,.3); }
-    .note { font-size: .9rem; opacity: .75; }
-    code { background: rgba(128,128,128,.15); padding: 1px 5px; border-radius: 4px; }
-    ul { padding-left: 1.2em; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PINEK — Le jeu de cartes de suites &amp; combinaisons</title>
+<meta name="description" id="metaDesc" content="PINEK : le jeu de cartes de suites et combinaisons. Jouez en solo contre une IA à 4 niveaux, ou en LAN entre amis. 100% hors ligne, sans inscription. iOS & Android." />
+<link rel="icon" href="assets/favicon.png" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="PINEK — Le jeu de cartes de suites & combinaisons" />
+<meta property="og:description" content="Suites & combinaisons. Solo contre l'IA ou en LAN entre amis. 100% hors ligne. iOS & Android." />
+<meta property="og:image" content="assets/icon.png" />
+<meta property="og:url" content="https://fourkap.github.io/pinek-privacy/" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<style>
+  :root{
+    --green-0:#1f5d44; --green-1:#184635; --green-2:#102b21; --green-3:#0b1f18;
+    --gold:#d6b46e; --gold-soft:#e7cf94; --gold-bright:#f0dca8;
+    --cream:#f4eddb; --cream-dim:#cdc6b3;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--cream);
+    background:radial-gradient(120% 90% at 50% -10%, var(--green-0) 0%, var(--green-1) 38%, var(--green-2) 72%, var(--green-3) 100%);
+    background-attachment:fixed;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  a{color:var(--gold-soft);text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* langue */
+  .langbar{position:fixed;top:14px;right:16px;z-index:50;
+    background:rgba(11,31,24,.6);backdrop-filter:blur(8px);border:1px solid rgba(214,180,110,.35);
+    border-radius:999px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:7px}
+  .langbar .globe{color:var(--gold-soft);font-size:.95rem}
+  .langbar select{font:inherit;font-size:.85rem;font-weight:600;color:var(--cream);
+    background:transparent;border:none;border-radius:999px;padding:3px 4px;cursor:pointer;outline:none}
+  .langbar select option{color:#10261c}
+  html[dir="rtl"] .langbar{right:auto;left:16px}
+
+  /* hero */
+  header{position:relative;text-align:center;padding:88px 0 70px;overflow:hidden}
+
+  /* logo officiel : les 4 cartes se distribuent au chargement, médaillon figé devant */
+  .hero-art{margin:0 auto;display:flex;justify-content:center}
+  .emblem{width:min(300px,76vw);display:block;filter:drop-shadow(0 12px 26px rgba(0,0,0,.45));
+    opacity:0;animation:emblemIn .6s ease .1s forwards}
+  @keyframes emblemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.emblem{animation:none;opacity:1}}
+  .wordmark{font-size:clamp(2.6rem,9vw,4.4rem);font-weight:800;letter-spacing:.22em;margin:18px 0 0 .22em;color:var(--cream);text-shadow:0 2px 0 rgba(0,0,0,.18)}
+  .tagline{font-size:clamp(1rem,2.6vw,1.28rem);color:var(--gold-soft);font-weight:600;margin-top:10px;padding:0 14px}
+  .subtag{color:var(--cream-dim);margin-top:6px;font-size:.98rem;padding:0 14px}
+  .diamond-sep{margin:22px auto 0;color:var(--gold);letter-spacing:.5em;opacity:.7;font-size:.8rem}
+
+  /* badges */
+  .stores{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .badge{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#1b1b18,#000);color:#fff;
+    border:1px solid rgba(214,180,110,.45);border-radius:13px;padding:11px 18px;
+    transition:transform .18s ease, box-shadow .18s ease;min-width:200px;text-align:left}
+  html[dir="rtl"] .badge{text-align:right}
+  .badge:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(0,0,0,.4)}
+  .badge svg{width:26px;height:26px;flex:none}
+  .badge .b-top{display:block;font-size:.66rem;letter-spacing:.04em;opacity:.85;line-height:1}
+  .badge .b-main{display:block;font-size:1.12rem;font-weight:600;line-height:1.15;margin-top:2px}
+
+  section{padding:64px 0}
+  h2.sec{text-align:center;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:800;color:var(--cream)}
+  h2.sec::after{content:"";display:block;width:54px;height:3px;border-radius:3px;background:var(--gold);margin:14px auto 0}
+  .lead{text-align:center;max-width:640px;margin:18px auto 0;color:var(--cream-dim);line-height:1.7}
+
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:42px}
+  .feat{background:rgba(244,237,219,.05);border:1px solid rgba(214,180,110,.22);border-radius:18px;padding:26px 22px;transition:.25s}
+  .feat:hover{border-color:rgba(214,180,110,.5);background:rgba(244,237,219,.08);transform:translateY(-4px)}
+  .feat .ic{font-size:1.7rem;width:52px;height:52px;display:grid;place-items:center;background:rgba(214,180,110,.14);border-radius:13px;margin-bottom:14px}
+  .feat h3{font-size:1.12rem;color:var(--gold-soft);margin-bottom:7px}
+  .feat p{color:var(--cream-dim);font-size:.95rem;line-height:1.6}
+
+  .shots{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+  .phone{width:220px;border-radius:30px;border:6px solid #0b1f18;box-shadow:0 18px 40px rgba(0,0,0,.45);overflow:hidden;background:#0b1f18;transition:transform .3s ease}
+  .phone:hover{transform:translateY(-8px) scale(1.02)}
+  .phone img{width:100%;display:block}
+  .tablet{width:min(360px,82vw);border-radius:26px;border:10px solid #0b1f18;box-shadow:0 22px 50px rgba(0,0,0,.5);overflow:hidden;background:#0b1f18;margin:46px auto 8px;transition:transform .3s ease}
+  .tablet:hover{transform:translateY(-8px) scale(1.02)}
+  .tablet img{width:100%;display:block}
+  .ipad-cap{text-align:center;color:var(--gold-soft);font-weight:600;font-size:.95rem;margin-top:4px}
+
+  /* étapes */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:42px}
+  .step{background:rgba(244,237,219,.05);border:1px solid rgba(214,180,110,.22);border-radius:18px;padding:30px 22px 24px;text-align:center}
+  .step .num{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--gold);color:#10261c;font-weight:800;font-size:1.2rem;margin-bottom:12px}
+  .step h3{color:var(--gold-soft);font-size:1.1rem;margin-bottom:6px}
+  .step p{color:var(--cream-dim);font-size:.95rem;line-height:1.6}
+  /* bande d'atouts */
+  .hlband{padding:26px 0}
+  .hlrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .hl{display:inline-flex;align-items:center;gap:8px;background:rgba(214,180,110,.12);border:1px solid rgba(214,180,110,.3);border-radius:999px;padding:9px 18px;font-weight:600;color:var(--cream);font-size:.95rem}
+
+  .cta{text-align:center}
+  .cta .stores{margin-top:26px}
+
+  footer{border-top:1px solid rgba(214,180,110,.2);padding:34px 0 46px;text-align:center;color:var(--cream-dim);font-size:.9rem}
+  footer a{margin:0 10px;font-weight:600}
+  footer .ml{margin-top:12px;opacity:.7;font-size:.82rem}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
 </head>
 <body>
 
-<!-- ============================== FRANÇAIS ============================== -->
-<h1>Politique de confidentialité — PINEK</h1>
-<p class="note">Dernière mise à jour : 21 juin 2026</p>
+<nav class="langbar" aria-label="Language">
+  <span class="globe" aria-hidden="true">🌐</span>
+  <select id="langSelect" onchange="setLang(this.value)" aria-label="Choisir la langue">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="hy">Հայերեն</option>
+    <option value="es">Español</option>
+    <option value="de">Deutsch</option>
+    <option value="ar">العربية</option>
+    <option value="tr">Türkçe</option>
+    <option value="zh">中文</option>
+    <option value="ru">Русский</option>
+    <option value="pt">Português</option>
+    <option value="ko">한국어</option>
+    <option value="ja">日本語</option>
+  </select>
+</nav>
 
-<p>
-  PINEK est un jeu de cartes mobile édité par <strong>Alexandre Kaprielian (auto-entrepreneur)</strong>
-  (« nous »). Cette politique explique quelles données l’application traite et comment.
-  Nous avons conçu PINEK pour en collecter le <strong>minimum</strong>.
-</p>
+<!-- HERO -->
+<header>
+  <div class="wrap">
+    <div class="hero-art">
+      <img class="emblem" src="assets/logo-hero.png" alt="PINEK" />
+    </div>
+    <div class="wordmark">PINEK</div>
+    <p class="tagline" data-i18n="tagline"></p>
+    <p class="subtag" data-i18n="subtag"></p>
+    <div class="diamond-sep">◆ ◆ ◆ ◆ ◆</div>
+    <div class="stores" data-stores></div>
+  </div>
+</header>
 
-<h2>1. Données stockées sur ton appareil</h2>
-<p>
-  Ton <strong>prénom</strong>, tes <strong>statistiques de jeu</strong> (parties, victoires,
-  séries…) et tes <strong>préférences</strong> (langue, son, difficulté) sont enregistrés
-  <strong>localement sur ton appareil uniquement</strong>. Ces informations ne sont
-  <strong>jamais transmises à nos serveurs</strong> (PINEK fonctionne hors ligne) et sont
-  effacées si tu désinstalles l’application.
-</p>
+<!-- FEATURES -->
+<section>
+  <div class="wrap reveal">
+    <h2 class="sec" data-i18n="featuresTitle"></h2>
+    <div class="features">
+      <div class="feat"><div class="ic">🃏</div><h3 data-i18n="f1t"></h3><p data-i18n="f1b"></p></div>
+      <div class="feat"><div class="ic">📶</div><h3 data-i18n="f2t"></h3><p data-i18n="f2b"></p></div>
+      <div class="feat"><div class="ic">🔒</div><h3 data-i18n="f3t"></h3><p data-i18n="f3b"></p></div>
+      <div class="feat"><div class="ic">🎓</div><h3 data-i18n="f4t"></h3><p data-i18n="f4b"></p></div>
+    </div>
+  </div>
+</section>
 
-<h2>2. Publicité (Google AdMob)</h2>
-<p>
-  PINEK est gratuit et financé par la publicité, fournie par <strong>Google AdMob</strong>.
-  Pour afficher des annonces, Google peut traiter des <strong>identifiants publicitaires</strong>
-  et des <strong>données techniques de l’appareil</strong> (type d’appareil, système,
-  approximation de la zone géographique, interactions avec les annonces), afin de diffuser des
-  publicités <strong>personnalisées ou non personnalisées</strong> selon ton choix.
-</p>
-<ul>
-  <li>Fonctionnement et données de Google :
-    <a href="https://policies.google.com/technologies/partner-sites">
-      policies.google.com/technologies/partner-sites</a></li>
-  <li>Politique de confidentialité de Google :
-    <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-</ul>
+<!-- HOW TO PLAY -->
+<section>
+  <div class="wrap reveal">
+    <h2 class="sec" data-i18n="howTitle"></h2>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><h3 data-i18n="s1t"></h3><p data-i18n="s1b"></p></div>
+      <div class="step"><span class="num">2</span><h3 data-i18n="s2t"></h3><p data-i18n="s2b"></p></div>
+      <div class="step"><span class="num">3</span><h3 data-i18n="s3t"></h3><p data-i18n="s3b"></p></div>
+    </div>
+  </div>
+</section>
 
-<h2>3. Ton consentement</h2>
-<p>
-  Dans l’Espace économique européen, au Royaume-Uni et en Suisse, un écran de consentement
-  (Google UMP) te demande ton choix concernant les annonces personnalisées avant tout traitement
-  à cette fin ; tu peux le modifier à tout moment. Sur iOS, une autorisation de suivi
-  (App Tracking Transparency) t’est demandée : tu peux la refuser, le jeu reste pleinement
-  jouable.
-</p>
+<!-- HIGHLIGHTS -->
+<section class="hlband">
+  <div class="wrap reveal hlrow">
+    <div class="hl">👥 <span data-i18n="hl1"></span></div>
+    <div class="hl">🌐 <span data-i18n="hl2"></span></div>
+    <div class="hl">📱 <span data-i18n="hl3"></span></div>
+    <div class="hl">🔌 <span data-i18n="hl4"></span></div>
+  </div>
+</section>
 
-<h2>4. Partage des données</h2>
-<p>
-  Nous ne vendons pas tes données. Le seul tiers susceptible de traiter des données via PINEK
-  est <strong>Google (AdMob)</strong>, dans le cadre décrit ci-dessus.
-</p>
+<!-- SCREENSHOTS -->
+<section>
+  <div class="wrap reveal">
+    <h2 class="sec" data-i18n="shotsTitle"></h2>
+    <div class="shots">
+      <div class="phone"><img src="assets/shots/03-accueil.png" alt="PINEK" loading="lazy"/></div>
+      <div class="phone"><img src="assets/shots/01-table-2joueurs.png" alt="PINEK" loading="lazy"/></div>
+      <div class="phone"><img src="assets/shots/04-qr-lan.png" alt="PINEK LAN" loading="lazy"/></div>
+    </div>
+  </div>
+</section>
 
-<h2>5. Enfants</h2>
-<p>
-  PINEK n’est pas destiné aux enfants de moins de 13 ans et ne collecte pas sciemment de données
-  les concernant. Le contenu publicitaire est paramétré « tout public ».
-</p>
+<!-- DEVICES (iPad) -->
+<section>
+  <div class="wrap reveal">
+    <h2 class="sec" data-i18n="devicesTitle"></h2>
+    <p class="lead" data-i18n="devicesLead"></p>
+    <div class="tablet"><img src="assets/shots/ipad-table.png" alt="PINEK iPad" loading="lazy"/></div>
+    <p class="ipad-cap" data-i18n="ipadLabel"></p>
+  </div>
+</section>
 
-<h2>6. Tes droits</h2>
-<ul>
-  <li><strong>Suppression</strong> : désinstaller l’application efface toutes les données locales.</li>
-  <li><strong>Publicité</strong> : tu peux retirer ou modifier ton consentement publicitaire à tout moment.</li>
-  <li>Pour toute question relative à tes droits (RGPD), écris-nous à l’adresse ci-dessous.</li>
-</ul>
+<footer>
+  <div class="wrap">
+    <a href="support/" data-i18n="support"></a> ·
+    <a href="privacy/" data-i18n="privacy"></a>
+    <div class="ml">© 2026 Alexandre Kaprielian · PINEK</div>
+  </div>
+</footer>
 
-<h2>7. Contact</h2>
-<p>Éditeur : <strong>Alexandre Kaprielian (auto-entrepreneur)</strong> — Contact : <a href="mailto:assu-nonneville@outlook.com">assu-nonneville@outlook.com</a></p>
+<script>
+  var APP_STORE = "https://apps.apple.com/app/id6783413280";
+  var PLAY_STORE = "https://play.google.com/store/apps/details?id=com.pinek.app";
 
-<hr class="lang-sep" />
+  var T = {
+    fr:{tagline:"Le jeu de cartes de suites & combinaisons.",subtag:"Jouez en solo contre l'IA, ou en LAN entre amis.",dlOn:"Télécharger sur",getOn:"Disponible sur",featuresTitle:"Ce qui rend PINEK unique",f1t:"Une vraie IA",f1b:"4 niveaux de difficulté, plus un mode Maître. L'adversaire compte les cartes, défend et ne fait pas de cadeaux.",f2t:"Multijoueur en LAN",f2b:"Jusqu'à 4 joueurs sur le même Wi-Fi. On rejoint la table d'un scan de QR code, sans compte.",f3t:"100% hors ligne",f3b:"Aucune inscription, aucune donnée envoyée. Vos parties et stats restent sur votre appareil.",f4t:"Tutoriel guidé",f4b:"Une première partie accompagnée pas à pas pour maîtriser les suites et combinaisons en quelques minutes.",shotsTitle:"Un coup d'œil",ctaTitle:"Prêt à jouer ?",ctaLead:"Gratuit. Téléchargez PINEK et lancez votre première partie dès maintenant.",support:"Support",privacy:"Confidentialité",ipadLabel:"Aussi optimisé pour iPad",howTitle:"Comment on joue",s1t:"Pioche",s1b:"Pioche une carte ou ramasse la défausse.",s2t:"Combine",s2b:"Forme des suites et des combinaisons.",s3t:"Termine",s3b:"Vide ta main avant l'adversaire.",devicesTitle:"Sur tous tes appareils",devicesLead:"PINEK fonctionne sur iPhone, iPad et Android.",hl1:"2 à 4 joueurs",hl2:"12 langues",hl3:"iOS & Android",hl4:"Hors-ligne"},
+    en:{tagline:"The card game of runs & sets.",subtag:"Play solo against the AI, or over LAN with friends.",dlOn:"Download on the",getOn:"Get it on",featuresTitle:"What makes PINEK special",f1t:"A real AI",f1b:"4 difficulty levels plus a Master mode. The opponent counts cards, defends, and gives nothing away.",f2t:"LAN multiplayer",f2b:"Up to 4 players on the same Wi-Fi. Join a table by scanning a QR code — no account needed.",f3t:"100% offline",f3b:"No sign-up, no data sent. Your games and stats stay on your device.",f4t:"Guided tutorial",f4b:"A step-by-step first game to master runs and sets in just a few minutes.",shotsTitle:"Take a look",ctaTitle:"Ready to play?",ctaLead:"Free to play. Download PINEK and start your first game right now.",support:"Support",privacy:"Privacy",ipadLabel:"Also optimized for iPad",howTitle:"How to play",s1t:"Draw",s1b:"Draw a card or take the discard.",s2t:"Combine",s2b:"Build runs and sets.",s3t:"Finish",s3b:"Empty your hand before your opponent.",devicesTitle:"On all your devices",devicesLead:"PINEK runs on iPhone, iPad and Android.",hl1:"2 to 4 players",hl2:"12 languages",hl3:"iOS & Android",hl4:"Offline"},
+    hy:{tagline:"Շարքերի և համակցությունների թղթախաղը։",subtag:"Խաղացե՛ք մենակ՝ արհեստական բանականության դեմ, կամ LAN-ով՝ ընկերների հետ։",dlOn:"Ներբեռնեք",getOn:"Հասանելի է",featuresTitle:"Ինչն է PINEK-ն առանձնահատուկ դարձնում",f1t:"Իսկական ԱԲ",f1b:"Դժվարության 4 մակարդակ և Վարպետի ռեժիմ։ Հակառակորդը հաշվում է թղթերը, պաշտպանվում է և նվերներ չի անում։",f2t:"LAN բազմախաղ",f2b:"Մինչև 4 խաղացող նույն Wi-Fi-ով։ Միացե՛ք սեղանին՝ սկանավորելով QR կոդը, առանց հաշվի։",f3t:"100% առանց ինտերնետի",f3b:"Առանց գրանցման, առանց տվյալների ուղարկման։ Ձեր խաղերն ու վիճակագրությունը մնում են ձեր սարքում։",f4t:"Ուղեկցվող ձեռնարկ",f4b:"Առաջին խաղը՝ քայլ առ քայլ ուղեկցմամբ, որպեսզի մի քանի րոպեում տիրապետեք շարքերին ու համակցություններին։",shotsTitle:"Հայացք գցեք",ctaTitle:"Պատրա՞ստ եք խաղալ",ctaLead:"Անվճար։ Ներբեռնե՛ք PINEK-ը և սկսե՛ք ձեր առաջին խաղը հիմա։",support:"Աջակցություն",privacy:"Գաղտնիություն",ipadLabel:"Հարմարեցված է նաև iPad-ի համար",howTitle:"Ինչպես խաղալ",s1t:"Վերցրու",s1b:"Վերցրու թուղթ կամ վերցրու թափվածը։",s2t:"Համակցիր",s2b:"Կազմիր շարքեր և համակցություններ։",s3t:"Ավարտիր",s3b:"Դատարկիր ձեռքդ հակառակորդից շուտ։",devicesTitle:"Քո բոլոր սարքերում",devicesLead:"PINEK-ն աշխատում է iPhone-ի, iPad-ի և Android-ի վրա։",hl1:"2–4 խաղացող",hl2:"12 լեզու",hl3:"iOS և Android",hl4:"Առանց ինտերնետի"},
+    es:{tagline:"El juego de cartas de escaleras y combinaciones.",subtag:"Juega en solitario contra la IA, o en LAN con amigos.",dlOn:"Descárgalo en el",getOn:"Disponible en",featuresTitle:"Lo que hace único a PINEK",f1t:"Una IA de verdad",f1b:"4 niveles de dificultad más un modo Maestro. El rival cuenta las cartas, se defiende y no regala nada.",f2t:"Multijugador en LAN",f2b:"Hasta 4 jugadores en la misma Wi-Fi. Únete a la mesa escaneando un código QR, sin cuenta.",f3t:"100% sin conexión",f3b:"Sin registro, sin datos enviados. Tus partidas y estadísticas se quedan en tu dispositivo.",f4t:"Tutorial guiado",f4b:"Una primera partida guiada paso a paso para dominar escaleras y combinaciones en unos minutos.",shotsTitle:"Un vistazo",ctaTitle:"¿Listo para jugar?",ctaLead:"Gratis. Descarga PINEK y empieza tu primera partida ahora mismo.",support:"Soporte",privacy:"Privacidad",ipadLabel:"También optimizado para iPad",howTitle:"Cómo se juega",s1t:"Roba",s1b:"Roba una carta o toma el descarte.",s2t:"Combina",s2b:"Forma escaleras y combinaciones.",s3t:"Termina",s3b:"Vacía tu mano antes que el rival.",devicesTitle:"En todos tus dispositivos",devicesLead:"PINEK funciona en iPhone, iPad y Android.",hl1:"2 a 4 jugadores",hl2:"12 idiomas",hl3:"iOS y Android",hl4:"Sin conexión"},
+    de:{tagline:"Das Kartenspiel mit Folgen & Kombinationen.",subtag:"Spiele solo gegen die KI oder per LAN mit Freunden.",dlOn:"Laden im",getOn:"Jetzt bei",featuresTitle:"Was PINEK besonders macht",f1t:"Eine echte KI",f1b:"4 Schwierigkeitsstufen plus einen Meister-Modus. Der Gegner zählt Karten, verteidigt sich und verschenkt nichts.",f2t:"LAN-Mehrspieler",f2b:"Bis zu 4 Spieler im selben WLAN. Tritt dem Tisch per QR-Code-Scan bei – ganz ohne Konto.",f3t:"100% offline",f3b:"Keine Anmeldung, keine Daten gesendet. Deine Spiele und Statistiken bleiben auf deinem Gerät.",f4t:"Geführtes Tutorial",f4b:"Ein Schritt für Schritt begleitetes erstes Spiel, um Folgen und Kombinationen in wenigen Minuten zu meistern.",shotsTitle:"Ein Blick",ctaTitle:"Bereit zu spielen?",ctaLead:"Kostenlos. Lade PINEK herunter und starte jetzt dein erstes Spiel.",support:"Support",privacy:"Datenschutz",ipadLabel:"Auch für iPad optimiert",howTitle:"So wird gespielt",s1t:"Ziehen",s1b:"Ziehe eine Karte oder nimm den Ablagestapel.",s2t:"Kombinieren",s2b:"Bilde Folgen und Kombinationen.",s3t:"Beenden",s3b:"Leere deine Hand vor dem Gegner.",devicesTitle:"Auf all deinen Geräten",devicesLead:"PINEK läuft auf iPhone, iPad und Android.",hl1:"2 bis 4 Spieler",hl2:"12 Sprachen",hl3:"iOS & Android",hl4:"Offline"},
+    ar:{tagline:"لعبة الورق القائمة على التسلسلات والتركيبات.",subtag:"العب بمفردك ضد الذكاء الاصطناعي، أو عبر الشبكة المحلية مع أصدقائك.",dlOn:"نزّله من",getOn:"احصل عليه من",featuresTitle:"ما الذي يميّز PINEK",f1t:"ذكاء اصطناعي حقيقي",f1b:"أربعة مستويات صعوبة بالإضافة إلى وضع الأستاذ. يَعُدّ الخصم الأوراق ويدافع ولا يمنحك شيئًا.",f2t:"لعب جماعي عبر الشبكة المحلية",f2b:"حتى 4 لاعبين على نفس شبكة Wi-Fi. انضم إلى الطاولة بمسح رمز QR، دون حساب.",f3t:"بدون إنترنت 100%",f3b:"بدون تسجيل، وبدون إرسال أي بيانات. تبقى مبارياتك وإحصاءاتك على جهازك.",f4t:"دليل تفاعلي",f4b:"مباراة أولى موجَّهة خطوة بخطوة لإتقان التسلسلات والتركيبات في دقائق.",shotsTitle:"نظرة سريعة",ctaTitle:"مستعد للعب؟",ctaLead:"مجانًا. نزّل PINEK وابدأ مباراتك الأولى الآن.",support:"الدعم",privacy:"الخصوصية",ipadLabel:"محسّنة أيضًا لجهاز iPad",howTitle:"كيفية اللعب",s1t:"اسحب",s1b:"اسحب ورقة أو خذ من كومة المرمى.",s2t:"ركّب",s2b:"كوّن تسلسلات وتركيبات.",s3t:"أنهِ",s3b:"أفرغ يدك قبل خصمك.",devicesTitle:"على كل أجهزتك",devicesLead:"يعمل PINEK على iPhone وiPad وAndroid.",hl1:"2 إلى 4 لاعبين",hl2:"12 لغة",hl3:"iOS وAndroid",hl4:"بدون إنترنت"},
+    tr:{tagline:"Dizi ve kombinasyon kart oyunu.",subtag:"Yapay zekâya karşı tek başına ya da arkadaşlarınla LAN üzerinden oyna.",dlOn:"İndir",getOn:"Şuradan edinin:",featuresTitle:"PINEK'i özel kılan ne?",f1t:"Gerçek bir yapay zekâ",f1b:"4 zorluk seviyesi ve bir Usta modu. Rakip kartları sayar, savunma yapar ve hiçbir şeyi armağan etmez.",f2t:"LAN çok oyunculu",f2b:"Aynı Wi-Fi'de 4 oyuncuya kadar. Masaya QR kod okutarak katılın, hesap gerekmez.",f3t:"%100 çevrimdışı",f3b:"Kayıt yok, veri gönderimi yok. Oyunların ve istatistiklerin cihazında kalır.",f4t:"Rehberli eğitim",f4b:"Dizileri ve kombinasyonları birkaç dakikada öğrenmen için adım adım eşlik eden ilk oyun.",shotsTitle:"Bir göz at",ctaTitle:"Oynamaya hazır mısın?",ctaLead:"Ücretsiz. PINEK'i indir ve ilk oyununa hemen başla.",support:"Destek",privacy:"Gizlilik",ipadLabel:"iPad için de optimize edildi",howTitle:"Nasıl oynanır",s1t:"Çek",s1b:"Bir kart çek ya da ıskartayı al.",s2t:"Birleştir",s2b:"Diziler ve kombinasyonlar oluştur.",s3t:"Bitir",s3b:"Elini rakibinden önce boşalt.",devicesTitle:"Tüm cihazlarında",devicesLead:"PINEK; iPhone, iPad ve Android'de çalışır.",hl1:"2-4 oyuncu",hl2:"12 dil",hl3:"iOS ve Android",hl4:"Çevrimdışı"},
+    zh:{tagline:"顺子与组合的纸牌游戏。",subtag:"单人对战 AI，或通过局域网与好友同玩。",dlOn:"下载于",getOn:"前往下载",featuresTitle:"PINEK 的独特之处",f1t:"真正的 AI",f1b:"4 个难度等级，外加大师模式。对手会记牌、会防守，绝不手下留情。",f2t:"局域网多人",f2b:"同一 Wi-Fi 下最多 4 名玩家。扫描二维码即可加入牌局，无需账号。",f3t:"100% 离线",f3b:"无需注册，不发送任何数据。你的牌局和统计数据只保存在本机。",f4t:"引导教程",f4b:"一局逐步引导的新手对局，几分钟即可掌握顺子与组合。",shotsTitle:"先睹为快",ctaTitle:"准备好开局了吗？",ctaLead:"免费畅玩。下载 PINEK，立即开始你的第一局。",support:"支持",privacy:"隐私政策",ipadLabel:"同样为 iPad 优化",howTitle:"怎么玩",s1t:"摸牌",s1b:"摸一张牌或拿走弃牌。",s2t:"组合",s2b:"组成顺子与组合。",s3t:"结束",s3b:"抢在对手之前清空手牌。",devicesTitle:"在你的所有设备上",devicesLead:"PINEK 可在 iPhone、iPad 和 Android 上运行。",hl1:"2 至 4 名玩家",hl2:"12 种语言",hl3:"iOS 和 Android",hl4:"离线"},
+    ru:{tagline:"Карточная игра последовательностей и комбинаций.",subtag:"Играйте в одиночку против ИИ или по LAN с друзьями.",dlOn:"Загрузите в",getOn:"Доступно в",featuresTitle:"Чем особенна PINEK",f1t:"Настоящий ИИ",f1b:"4 уровня сложности плюс режим Мастера. Соперник считает карты, защищается и ничего не дарит.",f2t:"Мультиплеер по LAN",f2b:"До 4 игроков в одной сети Wi-Fi. Присоединяйтесь к столу, отсканировав QR-код, без аккаунта.",f3t:"100% офлайн",f3b:"Без регистрации, без отправки данных. Ваши игры и статистика остаются на устройстве.",f4t:"Обучение с подсказками",f4b:"Первая игра с пошаговым сопровождением, чтобы освоить последовательности и комбинации за несколько минут.",shotsTitle:"Взгляните",ctaTitle:"Готовы играть?",ctaLead:"Бесплатно. Скачайте PINEK и начните первую партию прямо сейчас.",support:"Поддержка",privacy:"Конфиденциальность",ipadLabel:"Также оптимизировано для iPad",howTitle:"Как играть",s1t:"Возьми",s1b:"Возьми карту или сброс.",s2t:"Собери",s2b:"Складывай последовательности и комбинации.",s3t:"Закончи",s3b:"Опустоши руку раньше соперника.",devicesTitle:"На всех ваших устройствах",devicesLead:"PINEK работает на iPhone, iPad и Android.",hl1:"2–4 игрока",hl2:"12 языков",hl3:"iOS и Android",hl4:"Офлайн"},
+    pt:{tagline:"O jogo de cartas de sequências e combinações.",subtag:"Jogue sozinho contra a IA ou em LAN com os amigos.",dlOn:"Baixar na",getOn:"Disponível no",featuresTitle:"O que torna o PINEK especial",f1t:"Uma IA de verdade",f1b:"4 níveis de dificuldade mais um modo Mestre. O adversário conta as cartas, defende-se e não dá nada de bandeja.",f2t:"Multijogador em LAN",f2b:"Até 4 jogadores no mesmo Wi-Fi. Entre na mesa lendo um código QR, sem conta.",f3t:"100% offline",f3b:"Sem cadastro, sem envio de dados. Suas partidas e estatísticas ficam no seu aparelho.",f4t:"Tutorial guiado",f4b:"Uma primeira partida guiada passo a passo para dominar sequências e combinações em poucos minutos.",shotsTitle:"Dê uma olhada",ctaTitle:"Pronto para jogar?",ctaLead:"Grátis. Baixe o PINEK e comece sua primeira partida agora mesmo.",support:"Suporte",privacy:"Privacidade",ipadLabel:"Também otimizado para iPad",howTitle:"Como se joga",s1t:"Compre",s1b:"Compre uma carta ou pegue o descarte.",s2t:"Combine",s2b:"Forme sequências e combinações.",s3t:"Termine",s3b:"Esvazie sua mão antes do adversário.",devicesTitle:"Em todos os seus aparelhos",devicesLead:"O PINEK funciona em iPhone, iPad e Android.",hl1:"2 a 4 jogadores",hl2:"12 idiomas",hl3:"iOS e Android",hl4:"Offline"},
+    ko:{tagline:"런과 세트의 카드 게임.",subtag:"AI를 상대로 혼자, 또는 친구들과 LAN으로 플레이하세요.",dlOn:"다운로드",getOn:"다운로드",featuresTitle:"PINEK만의 특별함",f1t:"진짜 AI",f1b:"4단계 난이도와 마스터 모드. 상대는 카드를 세고 방어하며 아무것도 거저 주지 않습니다.",f2t:"LAN 멀티플레이",f2b:"같은 Wi-Fi에서 최대 4명. QR 코드를 스캔해 계정 없이 테이블에 참여하세요.",f3t:"100% 오프라인",f3b:"가입 없음, 데이터 전송 없음. 게임과 통계는 기기에만 저장됩니다.",f4t:"가이드 튜토리얼",f4b:"단계별로 안내되는 첫 게임으로 몇 분 만에 런과 세트를 익히세요.",shotsTitle:"살짝 둘러보기",ctaTitle:"플레이할 준비 되셨나요?",ctaLead:"무료. PINEK을 내려받고 지금 첫 게임을 시작하세요.",support:"지원",privacy:"개인정보 처리방침",ipadLabel:"iPad에도 최적화",howTitle:"플레이 방법",s1t:"뽑기",s1b:"카드를 뽑거나 버린 패를 가져오세요.",s2t:"조합",s2b:"런과 세트를 만드세요.",s3t:"완성",s3b:"상대보다 먼저 손패를 비우세요.",devicesTitle:"모든 기기에서",devicesLead:"PINEK은 iPhone, iPad, Android에서 작동합니다.",hl1:"2~4명",hl2:"12개 언어",hl3:"iOS & Android",hl4:"오프라인"},
+    ja:{tagline:"数列と組み合わせのカードゲーム。",subtag:"AIと一人で、または友だちとLANで対戦。",dlOn:"ダウンロード",getOn:"ダウンロード",featuresTitle:"PINEK ならではの魅力",f1t:"本物のAI",f1b:"4段階の難易度に加えてマスターモード。相手はカードを数え、守り、決して甘くありません。",f2t:"LAN マルチプレイ",f2b:"同じWi-Fiで最大4人。QRコードを読み取るだけで、アカウントなしでテーブルに参加できます。",f3t:"100% オフライン",f3b:"登録不要、データ送信なし。対戦記録や統計は端末内だけに残ります。",f4t:"ガイド付きチュートリアル",f4b:"ステップごとに案内される最初の対戦で、数列と組み合わせを数分でマスター。",shotsTitle:"ちょっと見てみる",ctaTitle:"プレイの準備はいい？",ctaLead:"無料。PINEK をダウンロードして、今すぐ最初の対戦を始めましょう。",support:"サポート",privacy:"プライバシー",ipadLabel:"iPad にも最適化",howTitle:"遊び方",s1t:"引く",s1b:"カードを1枚引くか捨て札を取る。",s2t:"組む",s2b:"数列と組み合わせを作る。",s3t:"上がる",s3b:"相手より先に手札をなくそう。",devicesTitle:"すべてのデバイスで",devicesLead:"PINEK は iPhone・iPad・Android に対応。",hl1:"2〜4人",hl2:"12言語",hl3:"iOS & Android",hl4:"オフライン"}
+  };
 
-<!-- ============================== ENGLISH ============================== -->
-<h1>Privacy Policy — PINEK</h1>
-<p class="note">Last updated: 21 June 2026</p>
+  var RTL = {ar:1};
+  var APPLE_SVG = '<svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>';
+  var PLAY_SVG = '<svg viewBox="0 0 512 512"><path fill="#34A853" d="M325 263 102 486c4 2 8 3 13 3 8 0 15-2 22-6l257-148-69-72z"/><path fill="#FBBC04" d="M462 232 351 168l-77 75 77 75 111-64c11-6 18-17 18-31s-7-25-18-31z"/><path fill="#EA4335" d="M102 26c-6 4-9 11-9 20v420c0 9 3 16 9 20l232-230L102 26z"/><path fill="#4285F4" d="M325 243 137 56l257 148 14-9-83 48z"/></svg>';
 
-<p>
-  PINEK is a mobile card game published by <strong>Alexandre Kaprielian (sole trader)</strong> (“we”). This policy
-  explains what data the app processes and how. PINEK is designed to collect the
-  <strong>bare minimum</strong>.
-</p>
+  function renderStores(t){
+    var html =
+      '<a class="badge" href="'+APP_STORE+'">'+APPLE_SVG+'<span><span class="b-top">'+t.dlOn+'</span><span class="b-main">App Store</span></span></a>'+
+      '<a class="badge" href="'+PLAY_STORE+'">'+PLAY_SVG+'<span><span class="b-top">'+t.getOn+'</span><span class="b-main">Google Play</span></span></a>';
+    document.querySelectorAll('[data-stores]').forEach(function(el){ el.innerHTML = html; });
+  }
 
-<h2>1. Data stored on your device</h2>
-<p>
-  Your <strong>first name</strong>, your <strong>game statistics</strong> (games, wins, streaks…)
-  and your <strong>preferences</strong> (language, sound, difficulty) are stored
-  <strong>locally on your device only</strong>. This information is <strong>never sent to our
-  servers</strong> (PINEK works offline) and is deleted if you uninstall the app.
-</p>
+  function setLang(l){
+    var t = T[l] || T.en;
+    document.documentElement.lang = l;
+    document.documentElement.dir = RTL[l] ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(t[k] != null) el.textContent = t[k];
+    });
+    renderStores(t);
+    document.title = 'PINEK — ' + t.tagline;
+    var md = document.getElementById('metaDesc');
+    if(md) md.setAttribute('content', t.tagline + ' ' + t.subtag);
+    var sel = document.getElementById('langSelect');
+    if(sel) sel.value = l;
+    try{ localStorage.setItem('pinek_lang', l); }catch(e){}
+  }
 
-<h2>2. Advertising (Google AdMob)</h2>
-<p>
-  PINEK is free and supported by ads served by <strong>Google AdMob</strong>. To show ads, Google
-  may process <strong>advertising identifiers</strong> and <strong>device technical data</strong>
-  (device type, OS, approximate location, ad interactions) to deliver
-  <strong>personalised or non-personalised</strong> ads depending on your choice.
-</p>
-<ul>
-  <li>How Google uses data:
-    <a href="https://policies.google.com/technologies/partner-sites">
-      policies.google.com/technologies/partner-sites</a></li>
-  <li>Google Privacy Policy:
-    <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-</ul>
+  (function(){
+    var saved;
+    try{ saved = localStorage.getItem('pinek_lang'); }catch(e){}
+    var nav = (navigator.language || 'fr').slice(0,2);
+    var l = saved || (T[nav] ? nav : 'en');
+    setLang(l);
+  })();
 
-<h2>3. Your consent</h2>
-<p>
-  In the European Economic Area, the UK and Switzerland, a consent screen (Google UMP) asks for
-  your choice about personalised ads before any such processing; you can change it at any time.
-  On iOS, an App Tracking Transparency prompt is shown: you may decline, and the game remains
-  fully playable.
-</p>
-
-<h2>4. Data sharing</h2>
-<p>
-  We do not sell your data. The only third party that may process data through PINEK is
-  <strong>Google (AdMob)</strong>, as described above.
-</p>
-
-<h2>5. Children</h2>
-<p>
-  PINEK is not directed to children under 13 and does not knowingly collect their data. Ad content
-  is set to a general audience rating.
-</p>
-
-<h2>6. Your rights</h2>
-<ul>
-  <li><strong>Deletion</strong>: uninstalling the app erases all local data.</li>
-  <li><strong>Advertising</strong>: you can withdraw or change your ad consent at any time.</li>
-  <li>For any request regarding your rights (GDPR), contact us at the address below.</li>
-</ul>
-
-<h2>7. Contact</h2>
-<p>Publisher: <strong>Alexandre Kaprielian (sole trader)</strong> — Contact: <a href="mailto:assu-nonneville@outlook.com">assu-nonneville@outlook.com</a></p>
-
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
 </body>
 </html>
