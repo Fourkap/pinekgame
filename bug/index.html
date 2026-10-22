@@ -4,116 +4,175 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PINEK — Signaler un bug · Proposer une amélioration</title>
+  <meta name="robots" content="noindex" />
   <link rel="icon" href="../assets/favicon.png" />
   <style>
     :root {
-      color-scheme: light dark;
-      --bg: #fafaf7; --fg: #1b1b1b; --muted: rgba(27,27,27,.65);
-      --card: #ffffff; --line: rgba(128,128,128,.28);
-      --gold: #c9a24f; --gold-ink: #2b2410; --green: #1b5e3f;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #14140f; --fg: #e8e8e3; --muted: rgba(232,232,227,.65);
-              --card: #1d1d16; --line: rgba(214,180,110,.28); }
-      a { color: #d6b46e; }
+      --green-0:#1f5d44; --green-1:#184635; --green-2:#102b21; --green-3:#0b1f18;
+      --gold:#d6b46e; --gold-soft:#e7cf94; --gold-ink:#2b2410;
+      --cream:#f4eddb; --cream-dim:#cdc6b3;
+      --line: rgba(214,180,110,.3); --card: rgba(8,20,14,.38);
     }
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-           max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.55;
-           color: var(--fg); background: var(--bg); }
-    header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-    header img { width: 56px; height: 56px; border-radius: 14px; }
+    html, body { margin: 0; }
+    body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+           color: var(--cream); line-height: 1.55; min-height: 100vh;
+           background: radial-gradient(120% 90% at 50% -10%, var(--green-0) 0%, var(--green-1) 38%, var(--green-2) 72%, var(--green-3) 100%) fixed; }
+    a { color: var(--gold-soft); text-decoration: none; }
+    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+
+    .langbar { position: fixed; top: 14px; right: 16px; z-index: 50;
+      background: rgba(11,31,24,.6); backdrop-filter: blur(8px); border: 1px solid rgba(214,180,110,.35);
+      border-radius: 999px; padding: 6px 6px 6px 14px; display: flex; align-items: center; gap: 7px; }
+    .langbar .globe { color: var(--gold-soft); font-size: .95rem; }
+    .langbar select { font: inherit; font-size: .85rem; font-weight: 600; color: var(--cream);
+      background: transparent; border: none; border-radius: 999px; padding: 3px 4px; cursor: pointer; outline: none; }
+    .langbar select option { color: #10261c; }
+    html[dir="rtl"] .langbar { right: auto; left: 16px; }
+
+    header { display: flex; align-items: center; gap: 14px; margin: 44px 0 18px; }
+    header img { width: 58px; height: 58px; border-radius: 15px; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
     h1 { font-size: 1.55rem; margin: 0; }
-    .note { font-size: .9rem; color: var(--muted); margin: 2px 0 0; }
-    .lang { margin-left: auto; display: flex; gap: 6px; }
-    .lang button { border: 1px solid var(--line); background: transparent; color: var(--fg);
-                   border-radius: 999px; padding: 4px 10px; font-size: .85rem; cursor: pointer; }
-    .lang button.on { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 600; }
+    .note { font-size: .9rem; color: var(--cream-dim); margin: 2px 0 0; }
+
+    .seg { display: flex; gap: 8px; }
+    .seg button { flex: 1; border: 1px solid var(--line); background: var(--card); color: var(--cream);
+                  border-radius: 12px; padding: 11px 8px; font: inherit; font-size: .98rem; cursor: pointer; }
+    .seg button.on { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 700; }
+    .seg.type { margin: 6px 0 14px; }
+    .seg.type button { padding: 13px 8px; font-weight: 600; }
+
+    .intro { color: var(--cream-dim); margin: 0 0 6px; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
             padding: 16px 18px; margin: 14px 0; }
-    label.h { display: block; font-weight: 700; font-size: .8rem; letter-spacing: .08em;
-              text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    .seg { display: flex; gap: 8px; margin-bottom: 12px; }
-    .seg.type { margin: 6px 0 14px; }
-    .seg.type button { padding: 12px; font-weight: 600; }
-    .seg button { flex: 1; border: 1px solid var(--line); background: transparent; color: var(--fg);
-                  border-radius: 10px; padding: 10px; font-size: 1rem; cursor: pointer; }
-    .seg button.on { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 700; }
-    select, input, textarea { width: 100%; font: inherit; color: var(--fg); background: transparent;
-                              border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
-    textarea { min-height: 140px; resize: vertical; }
-    .hint { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+    label.h { display: block; font-weight: 700; font-size: .78rem; letter-spacing: .1em;
+              text-transform: uppercase; color: rgba(214,180,110,.9); margin-bottom: 10px; }
+    select.field, input.field, textarea.field { width: 100%; font: inherit; color: var(--cream);
+      background: rgba(8,20,14,.45); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; margin-top: 10px; }
+    select.field option { color: #10261c; }
+    textarea.field { min-height: 150px; resize: vertical; margin-top: 0; }
+    input.field::placeholder, textarea.field::placeholder { color: rgba(244,237,219,.4); }
+    .hint { font-size: .85rem; color: var(--cream-dim); margin: 8px 0 0; }
+
+    .shots { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
+    .shot { position: relative; width: 84px; height: 84px; }
+    .shot img { width: 84px; height: 84px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+    .shot button { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 12px;
+                   border: none; background: var(--gold); color: var(--gold-ink); font-weight: 700; cursor: pointer; line-height: 1; }
+    html[dir="rtl"] .shot button { right: auto; left: -8px; }
+    .add { width: 84px; height: 84px; border: 1px dashed var(--line); border-radius: 10px; display: flex;
+           flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--gold-soft);
+           font-size: .72rem; text-align: center; padding: 4px; background: transparent; font-family: inherit; }
+    .add b { font-size: 1.6rem; line-height: 1; margin-bottom: 2px; }
+
     .btn { display: block; width: 100%; border: none; border-radius: 14px; padding: 15px;
-           font-size: 1.05rem; font-weight: 700; background: var(--gold); color: var(--gold-ink);
-           cursor: pointer; margin-top: 18px; }
-    .btn:active { opacity: .7; }
-    .steps { padding-left: 1.2em; margin: 8px 0 0; font-size: .95rem; }
-    .steps li { margin: 4px 0; }
-    .mail { font-weight: 600; word-break: break-all; }
+           font: inherit; font-size: 1.08rem; font-weight: 700; background: var(--gold); color: var(--gold-ink);
+           cursor: pointer; margin-top: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+    .btn:disabled { opacity: .6; cursor: default; }
+    .btn:active { opacity: .75; }
+    .ok { background: rgba(214,180,110,.14); border: 1px solid var(--gold); border-radius: 14px; padding: 14px 18px; margin: 14px 0; }
+    .ok b { color: var(--gold-soft); }
     .hide { display: none !important; }
-    footer { margin-top: 36px; font-size: .85rem; color: var(--muted); }
+    .honey { position: absolute; left: -9999px; }
+    footer { margin-top: 36px; font-size: .85rem; color: var(--cream-dim); text-align: center; }
+    footer a { margin: 0 6px; font-weight: 600; }
   </style>
 </head>
 <body>
 
+<nav class="langbar" aria-label="Language">
+  <span class="globe" aria-hidden="true">🌐</span>
+  <select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="hy">Հայերեն</option>
+    <option value="es">Español</option>
+    <option value="de">Deutsch</option>
+    <option value="ar">العربية</option>
+    <option value="tr">Türkçe</option>
+    <option value="zh">中文</option>
+    <option value="ru">Русский</option>
+    <option value="pt">Português</option>
+    <option value="ko">한국어</option>
+    <option value="ja">日本語</option>
+  </select>
+</nav>
+
+<div class="wrap">
 <header>
   <img src="../assets/icon.png" alt="PINEK" />
   <div>
-    <h1 data-i="title"></h1>
+    <h1 id="title"></h1>
     <p class="note" data-i="sub"></p>
-  </div>
-  <div class="lang">
-    <button id="l-fr" onclick="setLang('fr')">FR</button>
-    <button id="l-en" onclick="setLang('en')">EN</button>
   </div>
 </header>
 
+<div class="ok hide" id="sent"><b data-i="thanksTitle"></b><br /><span id="thanksMsg"></span></div>
+
 <div class="seg type">
-  <button id="t-bug" onclick="setType('bug')" data-i="tabBug"></button>
-  <button id="t-idea" onclick="setType('idea')" data-i="tabIdea"></button>
+  <button type="button" id="t-bug" onclick="setType('bug')" data-i="tabBug"></button>
+  <button type="button" id="t-idea" onclick="setType('idea')" data-i="tabIdea"></button>
 </div>
 
-<p data-i="intro"></p>
+<p class="intro" id="intro"></p>
 
-<div class="card" id="deviceCard">
-  <label class="h" data-i="device"></label>
-  <div class="seg">
-    <button id="p-ios" onclick="setPlatform('ios')">iPhone / iPad</button>
-    <button id="p-android" onclick="setPlatform('android')">Android</button>
+<form id="f" method="POST" enctype="multipart/form-data" onsubmit="return onSubmit(event)">
+  <input type="hidden" name="_subject" id="subject" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_captcha" value="false" />
+  <input type="hidden" name="_next" id="next" />
+  <input type="hidden" name="type" id="typeField" value="bug" />
+  <input type="hidden" name="platform" id="platformField" value="ios" />
+  <input type="hidden" name="navigateur" id="uaField" />
+  <input type="hidden" name="langue" id="langField" />
+  <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" />
+
+  <div class="card" id="deviceCard">
+    <label class="h" data-i="device"></label>
+    <div class="seg">
+      <button type="button" id="p-ios" onclick="setPlatform('ios')">iPhone / iPad</button>
+      <button type="button" id="p-android" onclick="setPlatform('android')">Android</button>
+    </div>
+    <select class="field" id="iosModel" name="appareil"></select>
+    <input class="field hide" id="androidModel" name="appareil_android" />
+    <p class="hint" id="deviceHint"></p>
   </div>
-  <select id="iosModel"></select>
-  <input id="androidModel" class="hide" />
-  <p class="hint" id="deviceHint"></p>
-</div>
 
-<div class="card">
-  <label class="h" data-i="describe"></label>
-  <textarea id="desc"></textarea>
-  <p class="hint" data-i="describeHint"></p>
-</div>
+  <div class="card">
+    <label class="h" id="describeLabel"></label>
+    <textarea class="field" id="desc" name="message" required></textarea>
+    <p class="hint" id="describeHint"></p>
+  </div>
 
-<div class="card" id="shotsCard">
-  <label class="h" data-i="shots"></label>
-  <ol class="steps">
-    <li data-i="shots1"></li>
-    <li data-i="shots2"></li>
-    <li data-i="shots3"></li>
-  </ol>
-</div>
+  <div class="card" id="shotsCard">
+    <label class="h" data-i="shots"></label>
+    <div class="shots" id="shots">
+      <button type="button" class="add" id="addBtn" onclick="document.getElementById('files').click()"><b>+</b><span data-i="addShots"></span></button>
+    </div>
+    <input type="file" id="files" name="capture" accept="image/*" multiple class="hide" onchange="onFiles(this.files)" />
+    <p class="hint" data-i="shotsHint"></p>
+  </div>
 
-<button class="btn" onclick="send()" data-i="send"></button>
-<p class="hint" style="text-align:center">
-  <span data-i="or"></span>
-  <a class="mail" href="mailto:alex.kaprielian@gmail.com">alex.kaprielian@gmail.com</a>
-</p>
+  <div class="card">
+    <label class="h" data-i="email"></label>
+    <input class="field" type="email" id="replyto" name="_replyto" style="margin-top:0" autocomplete="email" />
+    <p class="hint" data-i="emailHint"></p>
+  </div>
+
+  <button class="btn" type="submit" id="sendBtn" data-i="send"></button>
+</form>
 
 <footer>
-  <span data-i="inapp"></span>
-  · <a href="../">PINEK</a> · <a href="../support/" data-i="support"></a>
+  <span data-i="inapp"></span><br />
+  <a href="../">PINEK</a> · <a href="../support/" data-i="support"></a>
 </footer>
+</div>
 
 <script>
-  const EMAIL = 'alex.kaprielian@gmail.com';
+  // Relais de formulaire (FormSubmit) : le message et les images partent directement
+  // depuis la page, sans client mail. ENDPOINT = alias FormSubmit (pas l'adresse en clair).
+  const ENDPOINT = 'https://formsubmit.co/alex.kaprielian@gmail.com';
+  const MAX_FILES = 3, MAX_BYTES = 10 * 1024 * 1024;
   const MODELS = [
     'iPhone 17 Pro Max','iPhone 17 Pro','iPhone Air','iPhone 17','iPhone 16e',
     'iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16 Plus','iPhone 16',
@@ -124,84 +183,237 @@
     'iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone XS Max','iPhone XS','iPhone XR','iPhone X',
     'iPhone 8 Plus','iPhone 8','iPad Pro','iPad Air','iPad mini','iPad'
   ];
+  const RTL = { ar: true };
   const T = {
-    fr: {
-      title: 'Signaler un bug', sub: 'PINEK — jeu de cartes arménien',
-      tabBug: '🐞 Signaler un bug', tabIdea: '💡 Proposer une amélioration',
-      intro: 'Merci de nous aider à corriger PINEK. Remplis ce court formulaire : ta messagerie s’ouvrira avec le rapport prérempli, il ne te restera qu’à joindre tes captures d’écran et à envoyer.',
-      titleIdea: 'Proposer une amélioration',
-      introIdea: 'Une idée pour rendre PINEK meilleur ? Une règle, un mode de jeu, un réglage, une traduction… Dis-nous tout : ta messagerie s’ouvrira avec le message prérempli.',
-      describeIdea: 'Ton idée', descPhIdea: 'Ce que tu aimerais voir dans PINEK, et pourquoi…',
-      describeHintIdea: 'Toutes les idées sont lues. Les plus demandées passent en priorité dans les prochaines versions.',
-      subjectIdea: 'Pinek – suggestion', body1Idea: 'Idée d’amélioration',
-      device: 'Ton appareil', chooseModel: 'Choisis ton modèle dans la liste.',
-      androidPh: 'Marque et modèle (ex. Samsung Galaxy S23)', androidHint: 'Indique la marque et le modèle, et si possible la version d’Android.',
-      other: 'Autre / je ne sais pas',
-      describe: 'Que s’est-il passé ?', descPh: 'À quel moment, ce que tu faisais, ce que tu attendais…',
-      describeHint: 'Plus c’est précis, plus vite on corrige : mode de jeu (2 ou 4 joueurs), moment de la partie, message affiché.',
-      shots: 'Captures d’écran', shots1: 'Fais une capture d’écran du problème sur ton téléphone.',
-      shots2: 'Appuie sur « Envoyer par e-mail » ci-dessous : ta messagerie s’ouvre.',
-      shots3: 'Joins la capture au mail (trombone / « Insérer une photo ») puis envoie.',
-      send: 'Envoyer par e-mail', or: 'Ou écris-nous directement à',
-      needDesc: 'Décris le problème en quelques mots avant d’envoyer.',
-      subject: 'Pinek – signalement de bug', body1: 'Que s’est-il passé ?', tech: 'Infos (ajoutées automatiquement)',
-      inapp: 'Dans l’app : Réglages › À propos › Signaler un bug (captures jointes automatiquement).',
-      support: 'Assistance'
-    },
-    en: {
-      title: 'Report a bug', sub: 'PINEK — Armenian card game',
-      tabBug: '🐞 Report a bug', tabIdea: '💡 Suggest an improvement',
-      intro: 'Thanks for helping us fix PINEK. Fill in this short form: your mail app will open with the report prefilled, then just attach your screenshots and send.',
-      titleIdea: 'Suggest an improvement',
-      introIdea: 'An idea to make PINEK better? A rule, a game mode, a setting, a translation… Tell us: your mail app will open with the message prefilled.',
-      describeIdea: 'Your idea', descPhIdea: 'What you would like to see in PINEK, and why…',
-      describeHintIdea: 'Every idea is read. The most requested ones get priority in upcoming versions.',
-      subjectIdea: 'Pinek – suggestion', body1Idea: 'Improvement idea',
-      device: 'Your device', chooseModel: 'Pick your model from the list.',
-      androidPh: 'Brand and model (e.g. Samsung Galaxy S23)', androidHint: 'Give the brand and model, and the Android version if you know it.',
-      other: 'Other / not sure',
-      describe: 'What happened?', descPh: 'When it happened, what you were doing, what you expected…',
-      describeHint: 'The more precise, the faster we fix it: game mode (2 or 4 players), moment in the game, message shown.',
-      shots: 'Screenshots', shots1: 'Take a screenshot of the problem on your phone.',
-      shots2: 'Tap “Send by email” below: your mail app opens.',
-      shots3: 'Attach the screenshot to the email (paperclip / “Insert photo”) and send.',
-      send: 'Send by email', or: 'Or write to us directly at',
-      needDesc: 'Describe the problem in a few words before sending.',
-      subject: 'Pinek – bug report', body1: 'What happened?', tech: 'Info (added automatically)',
-      inapp: 'In the app: Settings › About › Report a bug (screenshots attached automatically).',
-      support: 'Support'
-    }
+    fr: { title:'Signaler un bug', titleIdea:'Proposer une amélioration', sub:'PINEK — jeu de cartes arménien',
+      tabBug:'🐞 Signaler un bug', tabIdea:'💡 Proposer une amélioration',
+      intro:'Merci de nous aider à corriger PINEK. Décris le problème, joins tes captures d’écran et envoie : tout part directement depuis cette page.',
+      introIdea:'Une idée pour rendre PINEK meilleur ? Une règle, un mode de jeu, un réglage, une traduction… Dis-nous tout.',
+      device:'Ton appareil', chooseModel:'Choisis ton modèle dans la liste.', androidPh:'Marque et modèle (ex. Samsung Galaxy S23)',
+      androidHint:'Indique la marque et le modèle, et si possible la version d’Android.', other:'Autre / je ne sais pas',
+      describe:'Que s’est-il passé ?', describeIdea:'Ton idée', descPh:'À quel moment, ce que tu faisais, ce que tu attendais…',
+      descPhIdea:'Ce que tu aimerais voir dans PINEK, et pourquoi…',
+      describeHint:'Plus c’est précis, plus vite on corrige : mode de jeu (2 ou 4 joueurs), moment de la partie, message affiché.',
+      describeHintIdea:'Toutes les idées sont lues. Les plus demandées passent en priorité dans les prochaines versions.',
+      shots:'Captures d’écran', addShots:'Ajouter', shotsHint:'Jusqu’à 3 images, 10 Mo au total.',
+      email:'Ton e-mail (facultatif)', emailHint:'Uniquement pour te répondre si on a besoin d’une précision.',
+      send:'Envoyer', sending:'Envoi…', needDesc:'Décris le problème en quelques mots avant d’envoyer.',
+      tooMany:'3 images maximum.', tooBig:'Images trop lourdes : 10 Mo maximum au total.',
+      thanksTitle:'Merci !', thanks:'Ton signalement est bien parti. On s’en occupe.', thanksIdea:'Ton idée est bien arrivée. Merci de nous aider à améliorer PINEK.',
+      inapp:'Dans l’app : Réglages › À propos › Signaler un bug.', support:'Assistance' },
+    en: { title:'Report a bug', titleIdea:'Suggest an improvement', sub:'PINEK — Armenian card game',
+      tabBug:'🐞 Report a bug', tabIdea:'💡 Suggest an improvement',
+      intro:'Thanks for helping us fix PINEK. Describe the problem, attach your screenshots and send: everything goes straight from this page.',
+      introIdea:'An idea to make PINEK better? A rule, a game mode, a setting, a translation… Tell us everything.',
+      device:'Your device', chooseModel:'Pick your model from the list.', androidPh:'Brand and model (e.g. Samsung Galaxy S23)',
+      androidHint:'Give the brand and model, and the Android version if you know it.', other:'Other / not sure',
+      describe:'What happened?', describeIdea:'Your idea', descPh:'When it happened, what you were doing, what you expected…',
+      descPhIdea:'What you would like to see in PINEK, and why…',
+      describeHint:'The more precise, the faster we fix it: game mode (2 or 4 players), moment in the game, message shown.',
+      describeHintIdea:'Every idea is read. The most requested ones get priority in upcoming versions.',
+      shots:'Screenshots', addShots:'Add', shotsHint:'Up to 3 images, 10 MB in total.',
+      email:'Your email (optional)', emailHint:'Only so we can get back to you if we need a detail.',
+      send:'Send', sending:'Sending…', needDesc:'Describe the problem in a few words before sending.',
+      tooMany:'3 images maximum.', tooBig:'Images too large: 10 MB maximum in total.',
+      thanksTitle:'Thank you!', thanks:'Your report has been sent. We’re on it.', thanksIdea:'Your idea has arrived. Thanks for helping us improve PINEK.',
+      inapp:'In the app: Settings › About › Report a bug.', support:'Support' },
+    hy: { title:'Հաղորդել սխալի մասին', titleIdea:'Առաջարկել բարելավում', sub:'PINEK — հայկական թղթախաղ',
+      tabBug:'🐞 Հաղորդել սխալի մասին', tabIdea:'💡 Առաջարկել բարելավում',
+      intro:'Շնորհակալություն, որ օգնում եք ուղղել PINEK-ը։ Նկարագրեք խնդիրը, կցեք էկրանի նկարները և ուղարկեք․ ամեն ինչ ուղարկվում է անմիջապես այս էջից։',
+      introIdea:'Գաղափա՞ր ունեք PINEK-ն ավելի լավը դարձնելու համար։ Կանոն, խաղի ռեժիմ, կարգավորում, թարգմանություն… Պատմեք մեզ։',
+      device:'Ձեր սարքը', chooseModel:'Ընտրեք ձեր մոդելը ցանկից։', androidPh:'Ապրանքանիշ և մոդել (օր.՝ Samsung Galaxy S23)',
+      androidHint:'Նշեք ապրանքանիշը և մոդելը, հնարավորության դեպքում՝ Android-ի տարբերակը։', other:'Այլ / չգիտեմ',
+      describe:'Ի՞նչ պատահեց', describeIdea:'Ձեր գաղափարը', descPh:'Երբ պատահեց, ինչ էիք անում, ինչ էիք սպասում…',
+      descPhIdea:'Ինչ կուզենայիք տեսնել PINEK-ում և ինչու…',
+      describeHint:'Որքան ճշգրիտ, այնքան արագ կուղղենք․ խաղի ռեժիմ (2 կամ 4 խաղացող), խաղի պահ, ցուցադրված հաղորդագրություն։',
+      describeHintIdea:'Բոլոր գաղափարները կարդացվում են։ Ամենապահանջվածները առաջնահերթ են հաջորդ տարբերակներում։',
+      shots:'Էկրանի նկարներ', addShots:'Ավելացնել', shotsHint:'Մինչև 3 նկար, ընդհանուր 10 ՄԲ։',
+      email:'Ձեր էլ. փոստը (ըստ ցանկության)', emailHint:'Միայն պատասխանելու համար, եթե ճշտում պետք լինի։',
+      send:'Ուղարկել', sending:'Ուղարկվում է…', needDesc:'Ուղարկելուց առաջ մի քանի բառով նկարագրեք խնդիրը։',
+      tooMany:'Առավելագույնը 3 նկար։', tooBig:'Նկարները չափազանց մեծ են․ ընդհանուր առավելագույնը 10 ՄԲ։',
+      thanksTitle:'Շնորհակալություն։', thanks:'Ձեր հաղորդումն ուղարկված է։ Մենք զբաղվում ենք դրանով։', thanksIdea:'Ձեր գաղափարը ստացվել է։ Շնորհակալություն PINEK-ը բարելավելու համար։',
+      inapp:'Հավելվածում՝ Կարգավորումներ › Մասին › Հաղորդել սխալի մասին։', support:'Աջակցություն' },
+    es: { title:'Informar de un error', titleIdea:'Proponer una mejora', sub:'PINEK — juego de cartas armenio',
+      tabBug:'🐞 Informar de un error', tabIdea:'💡 Proponer una mejora',
+      intro:'Gracias por ayudarnos a corregir PINEK. Describe el problema, adjunta tus capturas y envía: todo sale directamente desde esta página.',
+      introIdea:'¿Una idea para mejorar PINEK? Una regla, un modo de juego, un ajuste, una traducción… Cuéntanoslo todo.',
+      device:'Tu dispositivo', chooseModel:'Elige tu modelo en la lista.', androidPh:'Marca y modelo (p. ej. Samsung Galaxy S23)',
+      androidHint:'Indica la marca y el modelo, y si puedes la versión de Android.', other:'Otro / no lo sé',
+      describe:'¿Qué ha pasado?', describeIdea:'Tu idea', descPh:'Cuándo ocurrió, qué estabas haciendo, qué esperabas…',
+      descPhIdea:'Lo que te gustaría ver en PINEK, y por qué…',
+      describeHint:'Cuanto más preciso, antes lo corregimos: modo de juego (2 o 4 jugadores), momento de la partida, mensaje mostrado.',
+      describeHintIdea:'Leemos todas las ideas. Las más pedidas tienen prioridad en las próximas versiones.',
+      shots:'Capturas de pantalla', addShots:'Añadir', shotsHint:'Hasta 3 imágenes, 10 MB en total.',
+      email:'Tu correo (opcional)', emailHint:'Solo para responderte si necesitamos algún detalle.',
+      send:'Enviar', sending:'Enviando…', needDesc:'Describe el problema en pocas palabras antes de enviar.',
+      tooMany:'3 imágenes como máximo.', tooBig:'Imágenes demasiado pesadas: 10 MB como máximo en total.',
+      thanksTitle:'¡Gracias!', thanks:'Tu informe se ha enviado. Nos ocupamos de ello.', thanksIdea:'Tu idea ha llegado. Gracias por ayudarnos a mejorar PINEK.',
+      inapp:'En la app: Ajustes › Acerca de › Informar de un error.', support:'Soporte' },
+    de: { title:'Fehler melden', titleIdea:'Verbesserung vorschlagen', sub:'PINEK — armenisches Kartenspiel',
+      tabBug:'🐞 Fehler melden', tabIdea:'💡 Verbesserung vorschlagen',
+      intro:'Danke, dass du hilfst, PINEK zu verbessern. Beschreibe das Problem, häng deine Screenshots an und sende ab: alles geht direkt von dieser Seite aus.',
+      introIdea:'Eine Idee, um PINEK besser zu machen? Eine Regel, ein Spielmodus, eine Einstellung, eine Übersetzung… Erzähl uns alles.',
+      device:'Dein Gerät', chooseModel:'Wähle dein Modell aus der Liste.', androidPh:'Marke und Modell (z. B. Samsung Galaxy S23)',
+      androidHint:'Gib Marke und Modell an, wenn möglich auch die Android-Version.', other:'Anderes / weiß nicht',
+      describe:'Was ist passiert?', describeIdea:'Deine Idee', descPh:'Wann es passierte, was du gerade getan hast, was du erwartet hast…',
+      descPhIdea:'Was du dir in PINEK wünschst, und warum…',
+      describeHint:'Je genauer, desto schneller die Korrektur: Spielmodus (2 oder 4 Spieler), Moment im Spiel, angezeigte Meldung.',
+      describeHintIdea:'Jede Idee wird gelesen. Die meistgewünschten haben in den nächsten Versionen Vorrang.',
+      shots:'Screenshots', addShots:'Hinzufügen', shotsHint:'Bis zu 3 Bilder, insgesamt 10 MB.',
+      email:'Deine E-Mail (optional)', emailHint:'Nur, um dir zu antworten, falls wir eine Rückfrage haben.',
+      send:'Senden', sending:'Wird gesendet…', needDesc:'Beschreibe das Problem kurz, bevor du sendest.',
+      tooMany:'Maximal 3 Bilder.', tooBig:'Bilder zu groß: insgesamt maximal 10 MB.',
+      thanksTitle:'Danke!', thanks:'Dein Bericht wurde gesendet. Wir kümmern uns darum.', thanksIdea:'Deine Idee ist angekommen. Danke, dass du PINEK besser machst.',
+      inapp:'In der App: Einstellungen › Über › Fehler melden.', support:'Support' },
+    ar: { title:'الإبلاغ عن خطأ', titleIdea:'اقتراح تحسين', sub:'PINEK — لعبة ورق أرمنية',
+      tabBug:'🐞 الإبلاغ عن خطأ', tabIdea:'💡 اقتراح تحسين',
+      intro:'شكرًا لمساعدتنا على إصلاح PINEK. صف المشكلة، أرفق لقطات الشاشة ثم أرسل: كل شيء يُرسل مباشرة من هذه الصفحة.',
+      introIdea:'هل لديك فكرة لجعل PINEK أفضل؟ قاعدة، نمط لعب، إعداد، ترجمة… أخبرنا بكل شيء.',
+      device:'جهازك', chooseModel:'اختر طراز جهازك من القائمة.', androidPh:'العلامة والطراز (مثل Samsung Galaxy S23)',
+      androidHint:'اذكر العلامة والطراز، وإصدار Android إن أمكن.', other:'آخر / لا أعرف',
+      describe:'ماذا حدث؟', describeIdea:'فكرتك', descPh:'متى حدث، ماذا كنت تفعل، ماذا كنت تتوقع…',
+      descPhIdea:'ما الذي تود رؤيته في PINEK، ولماذا…',
+      describeHint:'كلما كان الوصف أدق، أسرعنا في الإصلاح: نمط اللعب (لاعبان أو 4)، لحظة اللعب، الرسالة المعروضة.',
+      describeHintIdea:'نقرأ كل الأفكار. الأكثر طلبًا لها الأولوية في الإصدارات القادمة.',
+      shots:'لقطات الشاشة', addShots:'إضافة', shotsHint:'حتى 3 صور، 10 ميغابايت إجمالًا.',
+      email:'بريدك الإلكتروني (اختياري)', emailHint:'فقط للرد عليك إذا احتجنا إلى توضيح.',
+      send:'إرسال', sending:'جارٍ الإرسال…', needDesc:'صف المشكلة بكلمات قليلة قبل الإرسال.',
+      tooMany:'3 صور كحد أقصى.', tooBig:'الصور كبيرة جدًا: 10 ميغابايت كحد أقصى إجمالًا.',
+      thanksTitle:'شكرًا!', thanks:'تم إرسال بلاغك. سنتولى الأمر.', thanksIdea:'وصلت فكرتك. شكرًا لمساعدتنا على تحسين PINEK.',
+      inapp:'في التطبيق: الإعدادات › حول › الإبلاغ عن خطأ.', support:'الدعم' },
+    tr: { title:'Hata bildir', titleIdea:'İyileştirme öner', sub:'PINEK — Ermeni kart oyunu',
+      tabBug:'🐞 Hata bildir', tabIdea:'💡 İyileştirme öner',
+      intro:'PINEK’i düzeltmemize yardım ettiğin için teşekkürler. Sorunu anlat, ekran görüntülerini ekle ve gönder: her şey doğrudan bu sayfadan gider.',
+      introIdea:'PINEK’i daha iyi yapacak bir fikrin mi var? Bir kural, oyun modu, ayar, çeviri… Hepsini anlat.',
+      device:'Cihazın', chooseModel:'Listeden modelini seç.', androidPh:'Marka ve model (örn. Samsung Galaxy S23)',
+      androidHint:'Marka ve modeli, mümkünse Android sürümünü belirt.', other:'Diğer / bilmiyorum',
+      describe:'Ne oldu?', describeIdea:'Fikrin', descPh:'Ne zaman oldu, ne yapıyordun, ne bekliyordun…',
+      descPhIdea:'PINEK’te görmek istediğin şey ve nedeni…',
+      describeHint:'Ne kadar ayrıntılı olursa o kadar hızlı düzeltiriz: oyun modu (2 veya 4 oyuncu), oyundaki an, görünen mesaj.',
+      describeHintIdea:'Her fikir okunur. En çok istenenler sonraki sürümlerde öncelik alır.',
+      shots:'Ekran görüntüleri', addShots:'Ekle', shotsHint:'En fazla 3 görsel, toplam 10 MB.',
+      email:'E-postan (isteğe bağlı)', emailHint:'Yalnızca bir ayrıntı gerekirse sana dönmek için.',
+      send:'Gönder', sending:'Gönderiliyor…', needDesc:'Göndermeden önce sorunu birkaç kelimeyle anlat.',
+      tooMany:'En fazla 3 görsel.', tooBig:'Görseller çok büyük: toplam en fazla 10 MB.',
+      thanksTitle:'Teşekkürler!', thanks:'Bildirimin gönderildi. İlgileniyoruz.', thanksIdea:'Fikrin ulaştı. PINEK’i geliştirmemize yardım ettiğin için teşekkürler.',
+      inapp:'Uygulamada: Ayarlar › Hakkında › Hata bildir.', support:'Destek' },
+    zh: { title:'报告问题', titleIdea:'提出改进建议', sub:'PINEK — 亚美尼亚纸牌游戏',
+      tabBug:'🐞 报告问题', tabIdea:'💡 提出改进建议',
+      intro:'感谢你帮助我们改进 PINEK。描述问题、附上截图并发送：一切直接从本页面发出。',
+      introIdea:'有让 PINEK 更好的想法吗？规则、游戏模式、设置、翻译……都告诉我们吧。',
+      device:'你的设备', chooseModel:'从列表中选择你的机型。', androidPh:'品牌和型号（例如 Samsung Galaxy S23）',
+      androidHint:'请填写品牌和型号，如果知道的话还有 Android 版本。', other:'其他 / 不确定',
+      describe:'发生了什么？', describeIdea:'你的想法', descPh:'何时发生、当时在做什么、你期望的结果……',
+      descPhIdea:'你希望在 PINEK 中看到什么，以及原因……',
+      describeHint:'越具体，修复越快：游戏模式（2 或 4 人）、对局中的时刻、显示的消息。',
+      describeHintIdea:'每条建议我们都会阅读。呼声最高的会在后续版本中优先实现。',
+      shots:'截图', addShots:'添加', shotsHint:'最多 3 张图片，共 10 MB。',
+      email:'你的邮箱（选填）', emailHint:'仅在需要补充信息时用于联系你。',
+      send:'发送', sending:'发送中……', needDesc:'发送前请用几句话描述问题。',
+      tooMany:'最多 3 张图片。', tooBig:'图片过大：总计最多 10 MB。',
+      thanksTitle:'谢谢！', thanks:'你的报告已发送。我们会处理。', thanksIdea:'你的想法已收到。感谢你帮助我们改进 PINEK。',
+      inapp:'在应用内：设置 › 关于 › 报告问题。', support:'支持' },
+    ru: { title:'Сообщить об ошибке', titleIdea:'Предложить улучшение', sub:'PINEK — армянская карточная игра',
+      tabBug:'🐞 Сообщить об ошибке', tabIdea:'💡 Предложить улучшение',
+      intro:'Спасибо, что помогаете исправить PINEK. Опишите проблему, приложите снимки экрана и отправьте: всё уходит прямо с этой страницы.',
+      introIdea:'Есть идея, как сделать PINEK лучше? Правило, режим игры, настройка, перевод… Расскажите нам.',
+      device:'Ваше устройство', chooseModel:'Выберите модель из списка.', androidPh:'Марка и модель (напр. Samsung Galaxy S23)',
+      androidHint:'Укажите марку и модель, по возможности версию Android.', other:'Другое / не знаю',
+      describe:'Что случилось?', describeIdea:'Ваша идея', descPh:'Когда это произошло, что вы делали, чего ожидали…',
+      descPhIdea:'Что вы хотели бы видеть в PINEK и почему…',
+      describeHint:'Чем точнее, тем быстрее исправим: режим игры (2 или 4 игрока), момент партии, показанное сообщение.',
+      describeHintIdea:'Мы читаем все идеи. Самые востребованные попадают в следующие версии в первую очередь.',
+      shots:'Снимки экрана', addShots:'Добавить', shotsHint:'До 3 изображений, всего 10 МБ.',
+      email:'Ваш e-mail (необязательно)', emailHint:'Только чтобы ответить вам, если понадобится уточнение.',
+      send:'Отправить', sending:'Отправка…', needDesc:'Перед отправкой опишите проблему в нескольких словах.',
+      tooMany:'Не более 3 изображений.', tooBig:'Изображения слишком большие: всего не более 10 МБ.',
+      thanksTitle:'Спасибо!', thanks:'Ваше сообщение отправлено. Мы займёмся этим.', thanksIdea:'Ваша идея получена. Спасибо за помощь в улучшении PINEK.',
+      inapp:'В приложении: Настройки › О приложении › Сообщить об ошибке.', support:'Поддержка' },
+    pt: { title:'Comunicar um erro', titleIdea:'Propor uma melhoria', sub:'PINEK — jogo de cartas arménio',
+      tabBug:'🐞 Comunicar um erro', tabIdea:'💡 Propor uma melhoria',
+      intro:'Obrigado por nos ajudares a corrigir o PINEK. Descreve o problema, anexa as tuas capturas e envia: tudo parte diretamente desta página.',
+      introIdea:'Uma ideia para tornar o PINEK melhor? Uma regra, um modo de jogo, uma definição, uma tradução… Conta-nos tudo.',
+      device:'O teu dispositivo', chooseModel:'Escolhe o teu modelo na lista.', androidPh:'Marca e modelo (ex. Samsung Galaxy S23)',
+      androidHint:'Indica a marca e o modelo e, se possível, a versão do Android.', other:'Outro / não sei',
+      describe:'O que aconteceu?', describeIdea:'A tua ideia', descPh:'Quando aconteceu, o que estavas a fazer, o que esperavas…',
+      descPhIdea:'O que gostarias de ver no PINEK, e porquê…',
+      describeHint:'Quanto mais preciso, mais depressa corrigimos: modo de jogo (2 ou 4 jogadores), momento da partida, mensagem apresentada.',
+      describeHintIdea:'Todas as ideias são lidas. As mais pedidas têm prioridade nas próximas versões.',
+      shots:'Capturas de ecrã', addShots:'Adicionar', shotsHint:'Até 3 imagens, 10 MB no total.',
+      email:'O teu e-mail (opcional)', emailHint:'Apenas para te responder se precisarmos de um detalhe.',
+      send:'Enviar', sending:'A enviar…', needDesc:'Descreve o problema em poucas palavras antes de enviar.',
+      tooMany:'Máximo de 3 imagens.', tooBig:'Imagens demasiado pesadas: máximo de 10 MB no total.',
+      thanksTitle:'Obrigado!', thanks:'O teu relatório foi enviado. Vamos tratar disso.', thanksIdea:'A tua ideia chegou. Obrigado por nos ajudares a melhorar o PINEK.',
+      inapp:'Na app: Definições › Acerca › Comunicar um erro.', support:'Suporte' },
+    ko: { title:'버그 신고', titleIdea:'개선 제안', sub:'PINEK — 아르메니아 카드 게임',
+      tabBug:'🐞 버그 신고', tabIdea:'💡 개선 제안',
+      intro:'PINEK 개선에 도움을 주셔서 감사합니다. 문제를 설명하고 스크린샷을 첨부한 뒤 보내세요. 모든 내용은 이 페이지에서 바로 전송됩니다.',
+      introIdea:'PINEK을 더 좋게 만들 아이디어가 있나요? 규칙, 게임 모드, 설정, 번역… 무엇이든 알려주세요.',
+      device:'사용 중인 기기', chooseModel:'목록에서 기기 모델을 선택하세요.', androidPh:'브랜드와 모델 (예: Samsung Galaxy S23)',
+      androidHint:'브랜드와 모델, 가능하면 Android 버전도 적어주세요.', other:'기타 / 모름',
+      describe:'무슨 일이 있었나요?', describeIdea:'당신의 아이디어', descPh:'언제 발생했는지, 무엇을 하고 있었는지, 무엇을 기대했는지…',
+      descPhIdea:'PINEK에서 보고 싶은 것과 그 이유…',
+      describeHint:'구체적일수록 빨리 고칠 수 있어요: 게임 모드(2인 또는 4인), 게임 중 시점, 표시된 메시지.',
+      describeHintIdea:'모든 아이디어를 읽습니다. 요청이 많은 것부터 다음 버전에 우선 반영됩니다.',
+      shots:'스크린샷', addShots:'추가', shotsHint:'최대 3장, 총 10 MB.',
+      email:'이메일 (선택)', emailHint:'추가 확인이 필요할 때 답변드리기 위해서만 사용합니다.',
+      send:'보내기', sending:'보내는 중…', needDesc:'보내기 전에 문제를 간단히 설명해 주세요.',
+      tooMany:'최대 3장까지 가능합니다.', tooBig:'이미지가 너무 큽니다: 총 10 MB까지 가능합니다.',
+      thanksTitle:'감사합니다!', thanks:'신고가 전송되었습니다. 확인하겠습니다.', thanksIdea:'아이디어가 도착했습니다. PINEK 개선에 도움을 주셔서 감사합니다.',
+      inapp:'앱에서: 설정 › 정보 › 버그 신고.', support:'지원' },
+    ja: { title:'不具合を報告', titleIdea:'改善を提案', sub:'PINEK — アルメニアのカードゲーム',
+      tabBug:'🐞 不具合を報告', tabIdea:'💡 改善を提案',
+      intro:'PINEK の改善にご協力ありがとうございます。問題を説明し、スクリーンショットを添付して送信してください。すべてこのページから直接送信されます。',
+      introIdea:'PINEK をより良くするアイデアはありますか？ ルール、ゲームモード、設定、翻訳…何でもお聞かせください。',
+      device:'お使いの端末', chooseModel:'リストから機種を選んでください。', androidPh:'メーカーと機種（例：Samsung Galaxy S23）',
+      androidHint:'メーカーと機種、わかれば Android のバージョンもお書きください。', other:'その他 / わからない',
+      describe:'何が起きましたか？', describeIdea:'あなたのアイデア', descPh:'いつ起きたか、何をしていたか、何を期待していたか…',
+      descPhIdea:'PINEK にあったらいいと思うものと、その理由…',
+      describeHint:'具体的なほど早く修正できます：ゲームモード（2人または4人）、ゲーム中のタイミング、表示されたメッセージ。',
+      describeHintIdea:'すべてのアイデアに目を通します。要望の多いものから次のバージョンで優先的に対応します。',
+      shots:'スクリーンショット', addShots:'追加', shotsHint:'最大 3 枚、合計 10 MB まで。',
+      email:'メールアドレス（任意）', emailHint:'詳細の確認が必要な場合にご連絡するためだけに使用します。',
+      send:'送信', sending:'送信中…', needDesc:'送信する前に問題を簡単に説明してください。',
+      tooMany:'最大 3 枚までです。', tooBig:'画像が大きすぎます：合計 10 MB までです。',
+      thanksTitle:'ありがとうございます！', thanks:'報告を送信しました。対応いたします。', thanksIdea:'アイデアを受け取りました。PINEK の改善にご協力いただきありがとうございます。',
+      inapp:'アプリ内：設定 › アプリについて › 不具合を報告。', support:'サポート' }
   };
-  let lang = 'fr', platform = 'ios', type = 'bug';
+
+  let lang = 'fr', platform = 'ios', type = 'bug', files = [];
+
+  function d() { return T[lang] || T.en; }
 
   function fill() {
-    const d = T[lang];
+    const t = d(), idea = type === 'idea';
     document.documentElement.lang = lang;
-    document.querySelectorAll('[data-i]').forEach(el => { el.textContent = d[el.dataset.i]; });
-    const idea = type === 'idea';
-    document.querySelector('[data-i="title"]').textContent = idea ? d.titleIdea : d.title;
-    document.querySelector('[data-i="intro"]').textContent = idea ? d.introIdea : d.intro;
-    document.querySelector('[data-i="describe"]').textContent = idea ? d.describeIdea : d.describe;
-    document.querySelector('[data-i="describeHint"]').textContent = idea ? d.describeHintIdea : d.describeHint;
+    document.documentElement.dir = RTL[lang] ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t[el.dataset.i]; });
+    document.getElementById('title').textContent = idea ? t.titleIdea : t.title;
+    document.title = 'PINEK — ' + (idea ? t.titleIdea : t.title);
+    document.getElementById('intro').textContent = idea ? t.introIdea : t.intro;
+    document.getElementById('describeLabel').textContent = idea ? t.describeIdea : t.describe;
+    document.getElementById('describeHint').textContent = idea ? t.describeHintIdea : t.describeHint;
+    document.getElementById('desc').placeholder = idea ? t.descPhIdea : t.descPh;
+    document.getElementById('thanksMsg').textContent = idea ? t.thanksIdea : t.thanks;
     document.getElementById('t-bug').classList.toggle('on', !idea);
     document.getElementById('t-idea').classList.toggle('on', idea);
     document.getElementById('deviceCard').classList.toggle('hide', idea);
     document.getElementById('shotsCard').classList.toggle('hide', idea);
-    document.getElementById('l-fr').classList.toggle('on', lang === 'fr');
-    document.getElementById('l-en').classList.toggle('on', lang === 'en');
-    const sel = document.getElementById('iosModel');
-    const keep = sel.value;
+    const sel = document.getElementById('iosModel'), keep = sel.value;
     sel.innerHTML = '';
-    MODELS.concat([d.other]).forEach(m => { const o = document.createElement('option'); o.value = o.textContent = m; sel.appendChild(o); });
+    MODELS.concat([t.other]).forEach(m => { const o = document.createElement('option'); o.value = o.textContent = m; sel.appendChild(o); });
     if (keep && [...sel.options].some(o => o.value === keep)) sel.value = keep;
-    document.getElementById('androidModel').placeholder = d.androidPh;
-    document.getElementById('desc').placeholder = idea ? d.descPhIdea : d.descPh;
-    document.getElementById('deviceHint').textContent = platform === 'ios' ? d.chooseModel : d.androidHint;
+    document.getElementById('androidModel').placeholder = t.androidPh;
+    document.getElementById('deviceHint').textContent = platform === 'ios' ? t.chooseModel : t.androidHint;
+    document.getElementById('langSelect').value = lang;
+    document.getElementById('langField').value = lang;
+    document.getElementById('typeField').value = type;
+    document.getElementById('platformField').value = platform;
   }
-  function setLang(l) { lang = l; try { localStorage.setItem('pinek_bug_lang', l); } catch {} fill(); }
+  function setLang(l) { lang = T[l] ? l : 'en'; try { localStorage.setItem('pinek_lang', lang); } catch (e) {} fill(); }
   function setType(t) {
     type = t;
-    try { history.replaceState(null, '', t === 'idea' ? '?type=idea' : location.pathname); } catch {}
+    try { history.replaceState(null, '', t === 'idea' ? '?type=idea' : location.pathname); } catch (e) {}
     fill();
   }
   function setPlatform(p) {
@@ -212,30 +424,64 @@
     document.getElementById('androidModel').classList.toggle('hide', p !== 'android');
     fill();
   }
-  function send() {
-    const d = T[lang];
+
+  // Images : on garde notre propre liste (aperçus + suppression), puis on la réinjecte
+  // dans l'input file via DataTransfer au moment de l'envoi.
+  function onFiles(list) {
+    const t = d();
+    const next = files.concat([...list]);
+    if (next.length > MAX_FILES) { alert(t.tooMany); }
+    files = next.slice(0, MAX_FILES);
+    if (files.reduce((s, f) => s + f.size, 0) > MAX_BYTES) { alert(t.tooBig); files = files.slice(0, -1); }
+    renderShots();
+  }
+  function removeShot(i) { files.splice(i, 1); renderShots(); }
+  function renderShots() {
+    const box = document.getElementById('shots'), add = document.getElementById('addBtn');
+    box.querySelectorAll('.shot').forEach(el => el.remove());
+    files.forEach((f, i) => {
+      const w = document.createElement('div'); w.className = 'shot';
+      const img = document.createElement('img'); img.src = URL.createObjectURL(f); img.alt = f.name;
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = '×'; b.onclick = () => removeShot(i);
+      w.appendChild(img); w.appendChild(b); box.insertBefore(w, add);
+    });
+    add.classList.toggle('hide', files.length >= MAX_FILES);
+    const dt = new DataTransfer(); files.forEach(f => dt.items.add(f));
+    document.getElementById('files').files = dt.files;
+  }
+
+  function onSubmit(e) {
+    const t = d(), f = document.getElementById('f');
     const desc = document.getElementById('desc').value.trim();
-    if (desc.length < 5) { alert(d.needDesc); document.getElementById('desc').focus(); return; }
+    if (desc.length < 5) { e.preventDefault(); alert(t.needDesc); document.getElementById('desc').focus(); return false; }
     const model = type === 'idea' ? '' : platform === 'ios'
       ? document.getElementById('iosModel').value
       : (document.getElementById('androidModel').value.trim() || 'Android');
-    const body = [
-      type === 'idea' ? d.body1Idea : d.body1, desc, '', '— — —', d.tech,
-      'Appareil / Device : ' + model,
-      'OS / navigateur : ' + navigator.userAgent,
-      'Langue / Lang : ' + lang,
-      'Source : web form'
-    ].join('\n');
-    const subject = type === 'idea' ? d.subjectIdea : d.subject + ' — ' + model;
-    location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    document.getElementById('subject').value = type === 'idea' ? 'Pinek – suggestion' : 'Pinek – bug — ' + model;
+    document.getElementById('uaField').value = navigator.userAgent;
+    // Champs non pertinents retirés de l'envoi (évite les colonnes vides dans le mail).
+    document.getElementById(platform === 'ios' ? 'androidModel' : 'iosModel').disabled = true;
+    if (type === 'idea') { document.getElementById('iosModel').disabled = true; document.getElementById('androidModel').disabled = true; document.getElementById('files').disabled = true; }
+    const mail = document.getElementById('replyto');
+    if (!mail.value.trim()) mail.disabled = true;
+    const u = new URL(location.href); u.search = ''; u.searchParams.set('sent', '1'); u.searchParams.set('type', type); u.searchParams.set('lang', lang);
+    document.getElementById('next').value = u.toString();
+    f.action = ENDPOINT;
+    const btn = document.getElementById('sendBtn'); btn.disabled = true; btn.textContent = t.sending;
+    return true;
   }
 
   (function init() {
-    let saved = null; try { saved = localStorage.getItem('pinek_bug_lang'); } catch {}
-    lang = saved || ((navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en');
-    const ua = navigator.userAgent;
-    type = new URLSearchParams(location.search).get('type') === 'idea' ? 'idea' : 'bug';
-    setPlatform(/android/i.test(ua) ? 'android' : 'ios');
+    const q = new URLSearchParams(location.search);
+    let saved = null; try { saved = localStorage.getItem('pinek_lang'); } catch (e) {}
+    const nav = (navigator.language || 'fr').slice(0, 2);
+    lang = T[q.get('lang')] ? q.get('lang') : (saved || (T[nav] ? nav : 'en'));
+    type = q.get('type') === 'idea' ? 'idea' : 'bug';
+    setPlatform(/android/i.test(navigator.userAgent) ? 'android' : 'ios');
+    if (q.get('sent') === '1') {
+      document.getElementById('sent').classList.remove('hide');
+      try { history.replaceState(null, '', type === 'idea' ? '?type=idea' : location.pathname); } catch (e) {}
+    }
   })();
 </script>
 </body>
