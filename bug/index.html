@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PINEK — Signaler un bug · Proposer une amélioration</title>
+  <link rel="icon" href="../assets/favicon.png" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #fafaf7; --fg: #1b1b1b; --muted: rgba(27,27,27,.65);
+      --card: #ffffff; --line: rgba(128,128,128,.28);
+      --gold: #c9a24f; --gold-ink: #2b2410; --green: #1b5e3f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #14140f; --fg: #e8e8e3; --muted: rgba(232,232,227,.65);
+              --card: #1d1d16; --line: rgba(214,180,110,.28); }
+      a { color: #d6b46e; }
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+           max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.55;
+           color: var(--fg); background: var(--bg); }
+    header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    header img { width: 56px; height: 56px; border-radius: 14px; }
+    h1 { font-size: 1.55rem; margin: 0; }
+    .note { font-size: .9rem; color: var(--muted); margin: 2px 0 0; }
+    .lang { margin-left: auto; display: flex; gap: 6px; }
+    .lang button { border: 1px solid var(--line); background: transparent; color: var(--fg);
+                   border-radius: 999px; padding: 4px 10px; font-size: .85rem; cursor: pointer; }
+    .lang button.on { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 600; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+            padding: 16px 18px; margin: 14px 0; }
+    label.h { display: block; font-weight: 700; font-size: .8rem; letter-spacing: .08em;
+              text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .seg { display: flex; gap: 8px; margin-bottom: 12px; }
+    .seg.type { margin: 6px 0 14px; }
+    .seg.type button { padding: 12px; font-weight: 600; }
+    .seg button { flex: 1; border: 1px solid var(--line); background: transparent; color: var(--fg);
+                  border-radius: 10px; padding: 10px; font-size: 1rem; cursor: pointer; }
+    .seg button.on { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 700; }
+    select, input, textarea { width: 100%; font: inherit; color: var(--fg); background: transparent;
+                              border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+    textarea { min-height: 140px; resize: vertical; }
+    .hint { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+    .btn { display: block; width: 100%; border: none; border-radius: 14px; padding: 15px;
+           font-size: 1.05rem; font-weight: 700; background: var(--gold); color: var(--gold-ink);
+           cursor: pointer; margin-top: 18px; }
+    .btn:active { opacity: .7; }
+    .steps { padding-left: 1.2em; margin: 8px 0 0; font-size: .95rem; }
+    .steps li { margin: 4px 0; }
+    .mail { font-weight: 600; word-break: break-all; }
+    .hide { display: none !important; }
+    footer { margin-top: 36px; font-size: .85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="../assets/icon.png" alt="PINEK" />
+  <div>
+    <h1 data-i="title"></h1>
+    <p class="note" data-i="sub"></p>
+  </div>
+  <div class="lang">
+    <button id="l-fr" onclick="setLang('fr')">FR</button>
+    <button id="l-en" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<div class="seg type">
+  <button id="t-bug" onclick="setType('bug')" data-i="tabBug"></button>
+  <button id="t-idea" onclick="setType('idea')" data-i="tabIdea"></button>
+</div>
+
+<p data-i="intro"></p>
+
+<div class="card" id="deviceCard">
+  <label class="h" data-i="device"></label>
+  <div class="seg">
+    <button id="p-ios" onclick="setPlatform('ios')">iPhone / iPad</button>
+    <button id="p-android" onclick="setPlatform('android')">Android</button>
+  </div>
+  <select id="iosModel"></select>
+  <input id="androidModel" class="hide" />
+  <p class="hint" id="deviceHint"></p>
+</div>
+
+<div class="card">
+  <label class="h" data-i="describe"></label>
+  <textarea id="desc"></textarea>
+  <p class="hint" data-i="describeHint"></p>
+</div>
+
+<div class="card" id="shotsCard">
+  <label class="h" data-i="shots"></label>
+  <ol class="steps">
+    <li data-i="shots1"></li>
+    <li data-i="shots2"></li>
+    <li data-i="shots3"></li>
+  </ol>
+</div>
+
+<button class="btn" onclick="send()" data-i="send"></button>
+<p class="hint" style="text-align:center">
+  <span data-i="or"></span>
+  <a class="mail" href="mailto:alex.kaprielian@gmail.com">alex.kaprielian@gmail.com</a>
+</p>
+
+<footer>
+  <span data-i="inapp"></span>
+  · <a href="../">PINEK</a> · <a href="../support/" data-i="support"></a>
+</footer>
+
+<script>
+  const EMAIL = 'alex.kaprielian@gmail.com';
+  const MODELS = [
+    'iPhone 17 Pro Max','iPhone 17 Pro','iPhone Air','iPhone 17','iPhone 16e',
+    'iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16 Plus','iPhone 16',
+    'iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15 Plus','iPhone 15',
+    'iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14 Plus','iPhone 14','iPhone SE (3)',
+    'iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 13 mini',
+    'iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 12 mini','iPhone SE (2)',
+    'iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone XS Max','iPhone XS','iPhone XR','iPhone X',
+    'iPhone 8 Plus','iPhone 8','iPad Pro','iPad Air','iPad mini','iPad'
+  ];
+  const T = {
+    fr: {
+      title: 'Signaler un bug', sub: 'PINEK — jeu de cartes arménien',
+      tabBug: '🐞 Signaler un bug', tabIdea: '💡 Proposer une amélioration',
+      intro: 'Merci de nous aider à corriger PINEK. Remplis ce court formulaire : ta messagerie s’ouvrira avec le rapport prérempli, il ne te restera qu’à joindre tes captures d’écran et à envoyer.',
+      titleIdea: 'Proposer une amélioration',
+      introIdea: 'Une idée pour rendre PINEK meilleur ? Une règle, un mode de jeu, un réglage, une traduction… Dis-nous tout : ta messagerie s’ouvrira avec le message prérempli.',
+      describeIdea: 'Ton idée', descPhIdea: 'Ce que tu aimerais voir dans PINEK, et pourquoi…',
+      describeHintIdea: 'Toutes les idées sont lues. Les plus demandées passent en priorité dans les prochaines versions.',
+      subjectIdea: 'Pinek – suggestion', body1Idea: 'Idée d’amélioration',
+      device: 'Ton appareil', chooseModel: 'Choisis ton modèle dans la liste.',
+      androidPh: 'Marque et modèle (ex. Samsung Galaxy S23)', androidHint: 'Indique la marque et le modèle, et si possible la version d’Android.',
+      other: 'Autre / je ne sais pas',
+      describe: 'Que s’est-il passé ?', descPh: 'À quel moment, ce que tu faisais, ce que tu attendais…',
+      describeHint: 'Plus c’est précis, plus vite on corrige : mode de jeu (2 ou 4 joueurs), moment de la partie, message affiché.',
+      shots: 'Captures d’écran', shots1: 'Fais une capture d’écran du problème sur ton téléphone.',
+      shots2: 'Appuie sur « Envoyer par e-mail » ci-dessous : ta messagerie s’ouvre.',
+      shots3: 'Joins la capture au mail (trombone / « Insérer une photo ») puis envoie.',
+      send: 'Envoyer par e-mail', or: 'Ou écris-nous directement à',
+      needDesc: 'Décris le problème en quelques mots avant d’envoyer.',
+      subject: 'Pinek – signalement de bug', body1: 'Que s’est-il passé ?', tech: 'Infos (ajoutées automatiquement)',
+      inapp: 'Dans l’app : Réglages › À propos › Signaler un bug (captures jointes automatiquement).',
+      support: 'Assistance'
+    },
+    en: {
+      title: 'Report a bug', sub: 'PINEK — Armenian card game',
+      tabBug: '🐞 Report a bug', tabIdea: '💡 Suggest an improvement',
+      intro: 'Thanks for helping us fix PINEK. Fill in this short form: your mail app will open with the report prefilled, then just attach your screenshots and send.',
+      titleIdea: 'Suggest an improvement',
+      introIdea: 'An idea to make PINEK better? A rule, a game mode, a setting, a translation… Tell us: your mail app will open with the message prefilled.',
+      describeIdea: 'Your idea', descPhIdea: 'What you would like to see in PINEK, and why…',
+      describeHintIdea: 'Every idea is read. The most requested ones get priority in upcoming versions.',
+      subjectIdea: 'Pinek – suggestion', body1Idea: 'Improvement idea',
+      device: 'Your device', chooseModel: 'Pick your model from the list.',
+      androidPh: 'Brand and model (e.g. Samsung Galaxy S23)', androidHint: 'Give the brand and model, and the Android version if you know it.',
+      other: 'Other / not sure',
+      describe: 'What happened?', descPh: 'When it happened, what you were doing, what you expected…',
+      describeHint: 'The more precise, the faster we fix it: game mode (2 or 4 players), moment in the game, message shown.',
+      shots: 'Screenshots', shots1: 'Take a screenshot of the problem on your phone.',
+      shots2: 'Tap “Send by email” below: your mail app opens.',
+      shots3: 'Attach the screenshot to the email (paperclip / “Insert photo”) and send.',
+      send: 'Send by email', or: 'Or write to us directly at',
+      needDesc: 'Describe the problem in a few words before sending.',
+      subject: 'Pinek – bug report', body1: 'What happened?', tech: 'Info (added automatically)',
+      inapp: 'In the app: Settings › About › Report a bug (screenshots attached automatically).',
+      support: 'Support'
+    }
+  };
+  let lang = 'fr', platform = 'ios', type = 'bug';
+
+  function fill() {
+    const d = T[lang];
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i]').forEach(el => { el.textContent = d[el.dataset.i]; });
+    const idea = type === 'idea';
+    document.querySelector('[data-i="title"]').textContent = idea ? d.titleIdea : d.title;
+    document.querySelector('[data-i="intro"]').textContent = idea ? d.introIdea : d.intro;
+    document.querySelector('[data-i="describe"]').textContent = idea ? d.describeIdea : d.describe;
+    document.querySelector('[data-i="describeHint"]').textContent = idea ? d.describeHintIdea : d.describeHint;
+    document.getElementById('t-bug').classList.toggle('on', !idea);
+    document.getElementById('t-idea').classList.toggle('on', idea);
+    document.getElementById('deviceCard').classList.toggle('hide', idea);
+    document.getElementById('shotsCard').classList.toggle('hide', idea);
+    document.getElementById('l-fr').classList.toggle('on', lang === 'fr');
+    document.getElementById('l-en').classList.toggle('on', lang === 'en');
+    const sel = document.getElementById('iosModel');
+    const keep = sel.value;
+    sel.innerHTML = '';
+    MODELS.concat([d.other]).forEach(m => { const o = document.createElement('option'); o.value = o.textContent = m; sel.appendChild(o); });
+    if (keep && [...sel.options].some(o => o.value === keep)) sel.value = keep;
+    document.getElementById('androidModel').placeholder = d.androidPh;
+    document.getElementById('desc').placeholder = idea ? d.descPhIdea : d.descPh;
+    document.getElementById('deviceHint').textContent = platform === 'ios' ? d.chooseModel : d.androidHint;
+  }
+  function setLang(l) { lang = l; try { localStorage.setItem('pinek_bug_lang', l); } catch {} fill(); }
+  function setType(t) {
+    type = t;
+    try { history.replaceState(null, '', t === 'idea' ? '?type=idea' : location.pathname); } catch {}
+    fill();
+  }
+  function setPlatform(p) {
+    platform = p;
+    document.getElementById('p-ios').classList.toggle('on', p === 'ios');
+    document.getElementById('p-android').classList.toggle('on', p === 'android');
+    document.getElementById('iosModel').classList.toggle('hide', p !== 'ios');
+    document.getElementById('androidModel').classList.toggle('hide', p !== 'android');
+    fill();
+  }
+  function send() {
+    const d = T[lang];
+    const desc = document.getElementById('desc').value.trim();
+    if (desc.length < 5) { alert(d.needDesc); document.getElementById('desc').focus(); return; }
+    const model = type === 'idea' ? '' : platform === 'ios'
+      ? document.getElementById('iosModel').value
+      : (document.getElementById('androidModel').value.trim() || 'Android');
+    const body = [
+      type === 'idea' ? d.body1Idea : d.body1, desc, '', '— — —', d.tech,
+      'Appareil / Device : ' + model,
+      'OS / navigateur : ' + navigator.userAgent,
+      'Langue / Lang : ' + lang,
+      'Source : web form'
+    ].join('\n');
+    const subject = type === 'idea' ? d.subjectIdea : d.subject + ' — ' + model;
+    location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+
+  (function init() {
+    let saved = null; try { saved = localStorage.getItem('pinek_bug_lang'); } catch {}
+    lang = saved || ((navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en');
+    const ua = navigator.userAgent;
+    type = new URLSearchParams(location.search).get('type') === 'idea' ? 'idea' : 'bug';
+    setPlatform(/android/i.test(ua) ? 'android' : 'ios');
+  })();
+</script>
+</body>
+</html>
