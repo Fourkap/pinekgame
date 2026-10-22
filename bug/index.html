@@ -116,16 +116,13 @@
 
 <p class="intro" id="intro"></p>
 
-<form id="f" method="POST" enctype="multipart/form-data" onsubmit="return onSubmit(event)">
-  <input type="hidden" name="_subject" id="subject" />
-  <input type="hidden" name="_template" value="table" />
-  <input type="hidden" name="_captcha" value="false" />
-  <input type="hidden" name="_next" id="next" />
-  <input type="hidden" name="type" id="typeField" value="bug" />
-  <input type="hidden" name="platform" id="platformField" value="ios" />
-  <input type="hidden" name="navigateur" id="uaField" />
-  <input type="hidden" name="langue" id="langField" />
-  <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" />
+<form id="f" onsubmit="return onSubmit(event)">
+  <input type="hidden" name="fi-text-sujet" id="subject" />
+  <input type="hidden" name="fi-text-type" id="typeField" value="bug" />
+  <input type="hidden" name="fi-text-plateforme" id="platformField" value="ios" />
+  <input type="hidden" name="fi-text-navigateur" id="uaField" />
+  <input type="hidden" name="fi-text-langue" id="langField" />
+  <input type="hidden" name="_gotcha" style="display:none !important" />
 
   <div class="card" id="deviceCard">
     <label class="h" data-i="device"></label>
@@ -133,14 +130,14 @@
       <button type="button" id="p-ios" onclick="setPlatform('ios')">iPhone / iPad</button>
       <button type="button" id="p-android" onclick="setPlatform('android')">Android</button>
     </div>
-    <select class="field" id="iosModel" name="appareil"></select>
-    <input class="field hide" id="androidModel" name="appareil_android" />
+    <select class="field" id="iosModel" name="fi-text-appareil"></select>
+    <input class="field hide" id="androidModel" name="fi-text-appareil_android" />
     <p class="hint" id="deviceHint"></p>
   </div>
 
   <div class="card">
     <label class="h" id="describeLabel"></label>
-    <textarea class="field" id="desc" name="message" required></textarea>
+    <textarea class="field" id="desc" name="fi-text-message" required></textarea>
     <p class="hint" id="describeHint"></p>
   </div>
 
@@ -149,13 +146,13 @@
     <div class="shots" id="shots">
       <button type="button" class="add" id="addBtn" onclick="document.getElementById('files').click()"><b>+</b><span data-i="addShots"></span></button>
     </div>
-    <input type="file" id="files" name="capture" accept="image/*" multiple class="hide" onchange="onFiles(this.files)" />
+    <input type="file" id="files" name="fi-file-capture[]" accept="image/*" multiple class="hide" onchange="onFiles(this.files)" />
     <p class="hint" data-i="shotsHint"></p>
   </div>
 
   <div class="card">
     <label class="h" data-i="email"></label>
-    <input class="field" type="email" id="replyto" name="_replyto" style="margin-top:0" autocomplete="email" required />
+    <input class="field" type="email" id="replyto" name="fi-sender-email" style="margin-top:0" autocomplete="email" required />
     <p class="hint" data-i="emailHint"></p>
   </div>
 
@@ -169,9 +166,9 @@
 </div>
 
 <script>
-  // Relais de formulaire (FormSubmit) : le message et les images partent directement
-  // depuis la page, sans client mail. ENDPOINT = alias FormSubmit (pas l'adresse en clair).
-  const ENDPOINT = 'https://formsubmit.co/alex.kaprielian@gmail.com';
+  // Relais de formulaire Forminit : le message et les images partent directement
+  // depuis la page (fetch multipart), sans client mail ni adresse e-mail dans le code.
+  const ENDPOINT = 'https://forminit.com/f/8lnbzpex1px';
   const MAX_FILES = 3, MAX_BYTES = 10 * 1024 * 1024;
   const MODELS = [
     'iPhone 18 Pro Max','iPhone 18 Pro','iPhone Duo',
@@ -200,7 +197,7 @@
       email:'Ton e-mail', emailHint:'Pour te répondre et te prévenir quand c’est corrigé.', needEmail:'Indique ton e-mail pour qu’on puisse te répondre.',
       send:'Envoyer', sending:'Envoi…', needDesc:'Décris le problème en quelques mots avant d’envoyer.',
       tooMany:'3 images maximum.', tooBig:'Images trop lourdes : 10 Mo maximum au total.',
-      thanksTitle:'Merci !', thanks:'Ton signalement est bien parti. On s’en occupe.', thanksIdea:'Ton idée est bien arrivée. Merci de nous aider à améliorer PINEK.',
+      sendError:'L’envoi a échoué. Réessaie dans quelques secondes.', thanksTitle:'Merci !', thanks:'Ton signalement est bien parti. On s’en occupe.', thanksIdea:'Ton idée est bien arrivée. Merci de nous aider à améliorer PINEK.',
       inapp:'Dans l’app : Réglages › À propos › Signaler un bug.', support:'Assistance' },
     en: { title:'Report a bug', titleIdea:'Suggest an improvement', sub:'PINEK — Armenian card game',
       tabBug:'🐞 Report a bug', tabIdea:'💡 Suggest an improvement',
@@ -216,7 +213,7 @@
       email:'Your email', emailHint:'So we can reply and let you know when it’s fixed.', needEmail:'Enter your email so we can get back to you.',
       send:'Send', sending:'Sending…', needDesc:'Describe the problem in a few words before sending.',
       tooMany:'3 images maximum.', tooBig:'Images too large: 10 MB maximum in total.',
-      thanksTitle:'Thank you!', thanks:'Your report has been sent. We’re on it.', thanksIdea:'Your idea has arrived. Thanks for helping us improve PINEK.',
+      sendError:'Sending failed. Please try again in a few seconds.', thanksTitle:'Thank you!', thanks:'Your report has been sent. We’re on it.', thanksIdea:'Your idea has arrived. Thanks for helping us improve PINEK.',
       inapp:'In the app: Settings › About › Report a bug.', support:'Support' },
     hy: { title:'Հաղորդել սխալի մասին', titleIdea:'Առաջարկել բարելավում', sub:'PINEK — հայկական թղթախաղ',
       tabBug:'🐞 Հաղորդել սխալի մասին', tabIdea:'💡 Առաջարկել բարելավում',
@@ -232,7 +229,7 @@
       email:'Ձեր էլ. փոստը', emailHint:'Որպեսզի պատասխանենք և տեղեկացնենք, երբ ուղղված լինի։', needEmail:'Նշեք ձեր էլ. փոստը, որպեսզի կարողանանք պատասխանել։',
       send:'Ուղարկել', sending:'Ուղարկվում է…', needDesc:'Ուղարկելուց առաջ մի քանի բառով նկարագրեք խնդիրը։',
       tooMany:'Առավելագույնը 3 նկար։', tooBig:'Նկարները չափազանց մեծ են․ ընդհանուր առավելագույնը 10 ՄԲ։',
-      thanksTitle:'Շնորհակալություն։', thanks:'Ձեր հաղորդումն ուղարկված է։ Մենք զբաղվում ենք դրանով։', thanksIdea:'Ձեր գաղափարը ստացվել է։ Շնորհակալություն PINEK-ը բարելավելու համար։',
+      sendError:'Ուղարկումը ձախողվեց։ Փորձեք կրկին մի քանի վայրկյանից։', thanksTitle:'Շնորհակալություն։', thanks:'Ձեր հաղորդումն ուղարկված է։ Մենք զբաղվում ենք դրանով։', thanksIdea:'Ձեր գաղափարը ստացվել է։ Շնորհակալություն PINEK-ը բարելավելու համար։',
       inapp:'Հավելվածում՝ Կարգավորումներ › Մասին › Հաղորդել սխալի մասին։', support:'Աջակցություն' },
     es: { title:'Informar de un error', titleIdea:'Proponer una mejora', sub:'PINEK — juego de cartas armenio',
       tabBug:'🐞 Informar de un error', tabIdea:'💡 Proponer una mejora',
@@ -248,7 +245,7 @@
       email:'Tu correo', emailHint:'Para responderte y avisarte cuando esté corregido.', needEmail:'Indica tu correo para que podamos responderte.',
       send:'Enviar', sending:'Enviando…', needDesc:'Describe el problema en pocas palabras antes de enviar.',
       tooMany:'3 imágenes como máximo.', tooBig:'Imágenes demasiado pesadas: 10 MB como máximo en total.',
-      thanksTitle:'¡Gracias!', thanks:'Tu informe se ha enviado. Nos ocupamos de ello.', thanksIdea:'Tu idea ha llegado. Gracias por ayudarnos a mejorar PINEK.',
+      sendError:'El envío ha fallado. Inténtalo de nuevo en unos segundos.', thanksTitle:'¡Gracias!', thanks:'Tu informe se ha enviado. Nos ocupamos de ello.', thanksIdea:'Tu idea ha llegado. Gracias por ayudarnos a mejorar PINEK.',
       inapp:'En la app: Ajustes › Acerca de › Informar de un error.', support:'Soporte' },
     de: { title:'Fehler melden', titleIdea:'Verbesserung vorschlagen', sub:'PINEK — armenisches Kartenspiel',
       tabBug:'🐞 Fehler melden', tabIdea:'💡 Verbesserung vorschlagen',
@@ -264,7 +261,7 @@
       email:'Deine E-Mail', emailHint:'Damit wir dir antworten und Bescheid geben können, wenn es behoben ist.', needEmail:'Gib deine E-Mail an, damit wir dir antworten können.',
       send:'Senden', sending:'Wird gesendet…', needDesc:'Beschreibe das Problem kurz, bevor du sendest.',
       tooMany:'Maximal 3 Bilder.', tooBig:'Bilder zu groß: insgesamt maximal 10 MB.',
-      thanksTitle:'Danke!', thanks:'Dein Bericht wurde gesendet. Wir kümmern uns darum.', thanksIdea:'Deine Idee ist angekommen. Danke, dass du PINEK besser machst.',
+      sendError:'Senden fehlgeschlagen. Bitte versuche es in ein paar Sekunden erneut.', thanksTitle:'Danke!', thanks:'Dein Bericht wurde gesendet. Wir kümmern uns darum.', thanksIdea:'Deine Idee ist angekommen. Danke, dass du PINEK besser machst.',
       inapp:'In der App: Einstellungen › Über › Fehler melden.', support:'Support' },
     ar: { title:'الإبلاغ عن خطأ', titleIdea:'اقتراح تحسين', sub:'PINEK — لعبة ورق أرمنية',
       tabBug:'🐞 الإبلاغ عن خطأ', tabIdea:'💡 اقتراح تحسين',
@@ -280,7 +277,7 @@
       email:'بريدك الإلكتروني', emailHint:'للرد عليك وإخبارك عند إصلاح المشكلة.', needEmail:'أدخل بريدك الإلكتروني حتى نتمكن من الرد عليك.',
       send:'إرسال', sending:'جارٍ الإرسال…', needDesc:'صف المشكلة بكلمات قليلة قبل الإرسال.',
       tooMany:'3 صور كحد أقصى.', tooBig:'الصور كبيرة جدًا: 10 ميغابايت كحد أقصى إجمالًا.',
-      thanksTitle:'شكرًا!', thanks:'تم إرسال بلاغك. سنتولى الأمر.', thanksIdea:'وصلت فكرتك. شكرًا لمساعدتنا على تحسين PINEK.',
+      sendError:'فشل الإرسال. حاول مجددًا بعد بضع ثوانٍ.', thanksTitle:'شكرًا!', thanks:'تم إرسال بلاغك. سنتولى الأمر.', thanksIdea:'وصلت فكرتك. شكرًا لمساعدتنا على تحسين PINEK.',
       inapp:'في التطبيق: الإعدادات › حول › الإبلاغ عن خطأ.', support:'الدعم' },
     tr: { title:'Hata bildir', titleIdea:'İyileştirme öner', sub:'PINEK — Ermeni kart oyunu',
       tabBug:'🐞 Hata bildir', tabIdea:'💡 İyileştirme öner',
@@ -296,7 +293,7 @@
       email:'E-postan', emailHint:'Sana yanıt vermek ve düzeltildiğinde haber vermek için.', needEmail:'Sana dönebilmemiz için e-postanı yaz.',
       send:'Gönder', sending:'Gönderiliyor…', needDesc:'Göndermeden önce sorunu birkaç kelimeyle anlat.',
       tooMany:'En fazla 3 görsel.', tooBig:'Görseller çok büyük: toplam en fazla 10 MB.',
-      thanksTitle:'Teşekkürler!', thanks:'Bildirimin gönderildi. İlgileniyoruz.', thanksIdea:'Fikrin ulaştı. PINEK’i geliştirmemize yardım ettiğin için teşekkürler.',
+      sendError:'Gönderim başarısız oldu. Birkaç saniye sonra tekrar dene.', thanksTitle:'Teşekkürler!', thanks:'Bildirimin gönderildi. İlgileniyoruz.', thanksIdea:'Fikrin ulaştı. PINEK’i geliştirmemize yardım ettiğin için teşekkürler.',
       inapp:'Uygulamada: Ayarlar › Hakkında › Hata bildir.', support:'Destek' },
     zh: { title:'报告问题', titleIdea:'提出改进建议', sub:'PINEK — 亚美尼亚纸牌游戏',
       tabBug:'🐞 报告问题', tabIdea:'💡 提出改进建议',
@@ -312,7 +309,7 @@
       email:'你的邮箱', emailHint:'用于回复你，并在修复后通知你。', needEmail:'请填写邮箱，以便我们回复你。',
       send:'发送', sending:'发送中……', needDesc:'发送前请用几句话描述问题。',
       tooMany:'最多 3 张图片。', tooBig:'图片过大：总计最多 10 MB。',
-      thanksTitle:'谢谢！', thanks:'你的报告已发送。我们会处理。', thanksIdea:'你的想法已收到。感谢你帮助我们改进 PINEK。',
+      sendError:'发送失败，请稍后重试。', thanksTitle:'谢谢！', thanks:'你的报告已发送。我们会处理。', thanksIdea:'你的想法已收到。感谢你帮助我们改进 PINEK。',
       inapp:'在应用内：设置 › 关于 › 报告问题。', support:'支持' },
     ru: { title:'Сообщить об ошибке', titleIdea:'Предложить улучшение', sub:'PINEK — армянская карточная игра',
       tabBug:'🐞 Сообщить об ошибке', tabIdea:'💡 Предложить улучшение',
@@ -328,7 +325,7 @@
       email:'Ваш e-mail', emailHint:'Чтобы ответить вам и сообщить, когда всё исправлено.', needEmail:'Укажите e-mail, чтобы мы могли вам ответить.',
       send:'Отправить', sending:'Отправка…', needDesc:'Перед отправкой опишите проблему в нескольких словах.',
       tooMany:'Не более 3 изображений.', tooBig:'Изображения слишком большие: всего не более 10 МБ.',
-      thanksTitle:'Спасибо!', thanks:'Ваше сообщение отправлено. Мы займёмся этим.', thanksIdea:'Ваша идея получена. Спасибо за помощь в улучшении PINEK.',
+      sendError:'Не удалось отправить. Повторите попытку через несколько секунд.', thanksTitle:'Спасибо!', thanks:'Ваше сообщение отправлено. Мы займёмся этим.', thanksIdea:'Ваша идея получена. Спасибо за помощь в улучшении PINEK.',
       inapp:'В приложении: Настройки › О приложении › Сообщить об ошибке.', support:'Поддержка' },
     pt: { title:'Comunicar um erro', titleIdea:'Propor uma melhoria', sub:'PINEK — jogo de cartas arménio',
       tabBug:'🐞 Comunicar um erro', tabIdea:'💡 Propor uma melhoria',
@@ -344,7 +341,7 @@
       email:'O teu e-mail', emailHint:'Para te responder e avisar quando estiver corrigido.', needEmail:'Indica o teu e-mail para podermos responder-te.',
       send:'Enviar', sending:'A enviar…', needDesc:'Descreve o problema em poucas palavras antes de enviar.',
       tooMany:'Máximo de 3 imagens.', tooBig:'Imagens demasiado pesadas: máximo de 10 MB no total.',
-      thanksTitle:'Obrigado!', thanks:'O teu relatório foi enviado. Vamos tratar disso.', thanksIdea:'A tua ideia chegou. Obrigado por nos ajudares a melhorar o PINEK.',
+      sendError:'O envio falhou. Tenta novamente dentro de alguns segundos.', thanksTitle:'Obrigado!', thanks:'O teu relatório foi enviado. Vamos tratar disso.', thanksIdea:'A tua ideia chegou. Obrigado por nos ajudares a melhorar o PINEK.',
       inapp:'Na app: Definições › Acerca › Comunicar um erro.', support:'Suporte' },
     ko: { title:'버그 신고', titleIdea:'개선 제안', sub:'PINEK — 아르메니아 카드 게임',
       tabBug:'🐞 버그 신고', tabIdea:'💡 개선 제안',
@@ -360,7 +357,7 @@
       email:'이메일', emailHint:'답변을 드리고 수정이 완료되면 알려드리기 위해 사용합니다.', needEmail:'답변을 드릴 수 있도록 이메일을 입력해 주세요.',
       send:'보내기', sending:'보내는 중…', needDesc:'보내기 전에 문제를 간단히 설명해 주세요.',
       tooMany:'최대 3장까지 가능합니다.', tooBig:'이미지가 너무 큽니다: 총 10 MB까지 가능합니다.',
-      thanksTitle:'감사합니다!', thanks:'신고가 전송되었습니다. 확인하겠습니다.', thanksIdea:'아이디어가 도착했습니다. PINEK 개선에 도움을 주셔서 감사합니다.',
+      sendError:'전송에 실패했습니다. 잠시 후 다시 시도해 주세요.', thanksTitle:'감사합니다!', thanks:'신고가 전송되었습니다. 확인하겠습니다.', thanksIdea:'아이디어가 도착했습니다. PINEK 개선에 도움을 주셔서 감사합니다.',
       inapp:'앱에서: 설정 › 정보 › 버그 신고.', support:'지원' },
     ja: { title:'不具合を報告', titleIdea:'改善を提案', sub:'PINEK — アルメニアのカードゲーム',
       tabBug:'🐞 不具合を報告', tabIdea:'💡 改善を提案',
@@ -376,7 +373,7 @@
       email:'メールアドレス', emailHint:'返信と、修正完了のお知らせのために使用します。', needEmail:'返信できるよう、メールアドレスを入力してください。',
       send:'送信', sending:'送信中…', needDesc:'送信する前に問題を簡単に説明してください。',
       tooMany:'最大 3 枚までです。', tooBig:'画像が大きすぎます：合計 10 MB までです。',
-      thanksTitle:'ありがとうございます！', thanks:'報告を送信しました。対応いたします。', thanksIdea:'アイデアを受け取りました。PINEK の改善にご協力いただきありがとうございます。',
+      sendError:'送信に失敗しました。数秒後にもう一度お試しください。', thanksTitle:'ありがとうございます！', thanks:'報告を送信しました。対応いたします。', thanksIdea:'アイデアを受け取りました。PINEK の改善にご協力いただきありがとうございます。',
       inapp:'アプリ内：設定 › アプリについて › 不具合を報告。', support:'サポート' }
   };
 
@@ -451,25 +448,39 @@
     document.getElementById('files').files = dt.files;
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
+    e.preventDefault();
     const t = d(), f = document.getElementById('f');
     const desc = document.getElementById('desc').value.trim();
-    if (desc.length < 5) { e.preventDefault(); alert(t.needDesc); document.getElementById('desc').focus(); return false; }
+    if (desc.length < 5) { alert(t.needDesc); document.getElementById('desc').focus(); return false; }
+    const mail = document.getElementById('replyto');
+    if (!mail.value.trim() || !mail.checkValidity()) { alert(t.needEmail); mail.focus(); return false; }
     const model = type === 'idea' ? '' : platform === 'ios'
       ? document.getElementById('iosModel').value
       : (document.getElementById('androidModel').value.trim() || 'Android');
     document.getElementById('subject').value = type === 'idea' ? 'Pinek – suggestion' : 'Pinek – bug — ' + model;
     document.getElementById('uaField').value = navigator.userAgent;
-    // Champs non pertinents retirés de l'envoi (évite les colonnes vides dans le mail).
-    document.getElementById(platform === 'ios' ? 'androidModel' : 'iosModel').disabled = true;
-    if (type === 'idea') { document.getElementById('iosModel').disabled = true; document.getElementById('androidModel').disabled = true; document.getElementById('files').disabled = true; }
-    const mail = document.getElementById('replyto');
-    if (!mail.value.trim() || !mail.checkValidity()) { e.preventDefault(); alert(t.needEmail); mail.focus(); return false; }
-    const u = new URL(location.href); u.search = ''; u.searchParams.set('sent', '1'); u.searchParams.set('type', type); u.searchParams.set('lang', lang);
-    document.getElementById('next').value = u.toString();
-    f.action = ENDPOINT;
+    // Champs non pertinents retirés de l'envoi (un champ désactivé n'entre pas dans FormData).
+    const ios = document.getElementById('iosModel'), and = document.getElementById('androidModel'), fi = document.getElementById('files');
+    ios.disabled = platform !== 'ios' || type === 'idea';
+    and.disabled = platform !== 'android' || type === 'idea';
+    fi.disabled = type === 'idea' || files.length === 0;
+    const body = new FormData(f);
+    ios.disabled = and.disabled = fi.disabled = false;
     const btn = document.getElementById('sendBtn'); btn.disabled = true; btn.textContent = t.sending;
-    return true;
+    try {
+      const r = await fetch(ENDPOINT, { method: 'POST', body, headers: { Accept: 'application/json' } });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.success) throw new Error(j.message || ('HTTP ' + r.status));
+      document.getElementById('sent').classList.remove('hide');
+      f.reset(); files = []; renderShots();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      alert(t.sendError + '\n' + (err && err.message ? err.message : ''));
+    } finally {
+      btn.disabled = false; btn.textContent = t.send;
+    }
+    return false;
   }
 
   (function init() {
@@ -479,10 +490,6 @@
     lang = T[q.get('lang')] ? q.get('lang') : (saved || (T[nav] ? nav : 'en'));
     type = q.get('type') === 'idea' ? 'idea' : 'bug';
     setPlatform(/android/i.test(navigator.userAgent) ? 'android' : 'ios');
-    if (q.get('sent') === '1') {
-      document.getElementById('sent').classList.remove('hide');
-      try { history.replaceState(null, '', type === 'idea' ? '?type=idea' : location.pathname); } catch (e) {}
-    }
   })();
 </script>
 </body>
